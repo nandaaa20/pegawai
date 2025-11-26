@@ -12,36 +12,57 @@ use Illuminate\View\View;
 class ProfileController extends Controller
 {
     /**
-     * Display the user's profile form.
+     * Tampilkan form profil user.
      */
     public function edit(Request $request): View
     {
         return view('profile.edit', [
-            'user' => $request->user(),
+            'user'    => $request->user(),
+            'pegawai' => $request->user()->pegawai ?? null, // kalau mau ditampilkan
         ]);
     }
 
     /**
-     * Update the user's profile information.
+     * Update informasi profil user.
+     *
+     * Catatan:
+     * - Di sistem kepegawaian, nama & NIP TIDAK boleh diubah oleh pegawai sendiri.
+     * - Hanya email (jika digunakan) yang boleh diubah dari halaman profil.
+     * - Nama & NIP dikelola oleh admin melalui modul pegawai.
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        // Ambil data tervalidasi
+        $data = $request->validated();
+
+        // Hanya izinkan update email
+        if (array_key_exists('email', $data)) {
+            // Jika email berubah, reset verifikasi
+            if ($data['email'] !== $user->email) {
+                $user->email = $data['email'];
+                $user->email_verified_at = null;
+            }
         }
 
-        $request->user()->save();
+        // Jangan sentuh name, nip, role, dll dari sini
+        $user->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
     /**
-     * Delete the user's account.
+     * Hapus akun user.
+     *
+     * Opsional: untuk sistem kepegawaian biasanya AKUN TIDAK BOLEH dihapus sendiri.
+     * Kalau mau dinonaktifkan, bisa langsung return redirect.
      */
     public function destroy(Request $request): RedirectResponse
     {
+        // Kalau tidak ingin mengizinkan pegawai menghapus akun sendiri:
+        // return Redirect::route('profile.edit')->with('error', 'Penghapusan akun tidak diizinkan.');
+
         $request->validateWithBag('userDeletion', [
             'password' => ['required', 'current_password'],
         ]);

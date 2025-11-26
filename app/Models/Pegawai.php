@@ -25,8 +25,19 @@ class Pegawai extends Model
         'status_kepegawaian',
     ];
 
+    public function cuti()
+    {
+        return $this->hasMany(\App\Models\Cuti::class);
+    }
+
+    public function kehadiran()
+    {
+        return $this->hasMany(\App\Models\Kehadiran::class);
+    }
+
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(\App\Models\User::class);
     }
+
 }
