@@ -1,66 +1,101 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sistem Informasi Kepegawaian – Laravel
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi ini merupakan **Sistem Informasi Kepegawaian** berbasis web yang dibangun menggunakan **Laravel** sebagai bagian dari tugas akhir / skripsi.  
+Fitur utama meliputi:
 
-## About Laravel
+- Manajemen data pegawai  
+- Pengajuan dan persetujuan cuti  
+- Pencatatan kehadiran pegawai  
+- Laporan pegawai, cuti, dan kehadiran (export PDF)  
+- Role-based access control (Admin & Pegawai)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🧰 Teknologi yang Digunakan
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Framework** : Laravel  
+- **Frontend**  : Blade + Tailwind CSS (Laravel Breeze)  
+- **Database**  : MySQL  
+- **Auth**      : Laravel Breeze (dimodifikasi menjadi login NIP)  
+- **PDF**       : barryvdh/laravel-dompdf  
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 🧑‍💻 Fitur Utama
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 1. Autentikasi & Role
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- Login menggunakan **NIP** & password  
+- Role:
+  - **Admin** : mengelola data pegawai, cuti, kehadiran, dan laporan  
+  - **Pegawai** : mengajukan cuti, melihat riwayat cuti & kehadiran, melihat profil  
+- Middleware **role-based access control**  
+- Dashboard terpisah untuk Admin & Pegawai  
 
-## Laravel Sponsors
+### 2. Manajemen Data Pegawai
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- CRUD data pegawai (oleh admin)
+- Relasi otomatis dengan tabel `users`
+- Auto-generate akun login pegawai saat data pegawai dibuat
+- Sinkronisasi nama & NIP antara `pegawai` dan `users`
+- Input jabatan & departemen menggunakan dropdown
+- Halaman detail pegawai yang menampilkan:
+  - Data kepegawaian
+  - Informasi kontak
+  - Informasi akun login
+- Fitur **Reset Password** oleh admin untuk setiap pegawai
 
-### Premium Partners
+### 3. Modul Cuti
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+- Pegawai mengajukan cuti melalui form pengajuan  
+- Admin dapat melihat seluruh pengajuan cuti  
+- Admin memutuskan pengajuan (disetujui / ditolak) menggunakan satu dropdown  
+- Keputusan cuti **final** (tidak dapat diedit ulang)  
+- Riwayat cuti dapat dilihat oleh pegawai dan admin  
 
-## Contributing
+### 4. Modul Kehadiran
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- Admin mencatat kehadiran pegawai per tanggal
+- Status kehadiran: **hadir, izin, sakit, alpha**
+- Rekap kehadiran per tanggal
+- Data kehadiran muncul di dashboard dan laporan
 
-## Code of Conduct
+### 5. Laporan & Export PDF
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- **Laporan Pegawai**
+  - Filter berdasarkan status kepegawaian, jabatan, dan departemen
+  - Tabel laporan + **Export PDF**
 
-## Security Vulnerabilities
+- **Laporan Cuti**
+  - Filter berdasarkan periode tanggal, status pengajuan, jenis cuti, dan departemen
+  - Tabel laporan + **Export PDF**
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- **Laporan Kehadiran**
+  - Filter berdasarkan bulan, tahun, dan departemen
+  - Rekap hadir/izin/sakit/alpha
+  - Tabel laporan + **Export PDF**
 
-## License
+### 6. Dashboard Admin
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Dashboard admin menampilkan ringkasan:
+
+- Total pegawai, pegawai aktif, kontrak, dan nonaktif  
+- Ringkasan cuti (pending, disetujui, ditolak, dan jumlah cuti bulan ini)  
+- Ringkasan kehadiran hari ini (hadir, izin, sakit, alpha)  
+- Pegawai per departemen (Top 5)  
+- Quick link ke:
+  - Laporan Pegawai  
+  - Laporan Cuti  
+  - Laporan Kehadiran  
+
+---
+
+## 🚀 Instalasi & Setup
+
+> Pastikan sudah menginstall PHP, Composer, Node.js, dan MySQL.
+
+1. **Clone Repository**
+
+```bash
+git clone <url-repo-github-anda>.git
+cd pegawai
