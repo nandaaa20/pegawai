@@ -1,4 +1,4 @@
-<section class="space-y-6">
+{{-- <section class="space-y-6">
     <header>
         <h2 class="text-lg font-semibold text-gray-900">
             Hapus Akun
@@ -96,4 +96,4 @@
             </div>
         </form>
     </x-modal>
-</section>
+</section> --}}

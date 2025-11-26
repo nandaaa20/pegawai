@@ -6,8 +6,9 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Pegawai\DashboardController as PegawaiDashboard;
 use App\Http\Controllers\Admin\PegawaiController;
 use App\Http\Controllers\Admin\CutiController;
-
-
+use App\Http\Controllers\Admin\LaporanPegawaiController;
+use App\Http\Controllers\Admin\LaporanCutiController;
+use App\Http\Controllers\Admin\LaporanKehadiranController;
 // Redirect ke login
 Route::get('/', fn () => redirect('/login'));
 
@@ -50,7 +51,26 @@ Route::middleware('auth')->group(function () {
                 ->name('kehadiran.create');
             Route::post('/kehadiran', [\App\Http\Controllers\Admin\KehadiranController::class, 'store'])
                 ->name('kehadiran.store');
-        });
+
+            // LAPORAN
+            Route::get('/laporan/pegawai', [LaporanPegawaiController::class, 'index'])
+                ->name('laporan.pegawai');
+            Route::get('/laporan/pegawai/cetak', [LaporanPegawaiController::class, 'exportPdf'])
+                ->name('laporan.pegawai.pdf');
+
+            // LAPORAN CUTI
+            Route::get('/laporan/cuti', [LaporanCutiController::class, 'index'])
+                ->name('laporan.cuti');
+
+            Route::get('/laporan/cuti/pdf', [LaporanCutiController::class, 'exportPdf'])
+                ->name('laporan.cuti.pdf');
+
+            Route::get('/laporan/kehadiran', [LaporanKehadiranController::class, 'index'])
+                ->name('laporan.kehadiran');
+
+            Route::get('/laporan/kehadiran/pdf', [LaporanKehadiranController::class, 'exportPdf'])
+                ->name('laporan.kehadiran.pdf');
+            });
 
 
     // Pegawai

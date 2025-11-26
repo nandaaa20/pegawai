@@ -113,7 +113,7 @@
                 </div>
                 <input
                     type="text"
-                    value="{{ ucfirst($user->role) }}"
+                    value="{{ optional($user)->role ? ucfirst(optional($user)->role) : '' }}"
                     class="block w-full pl-10 border-gray-300 bg-gray-50 text-gray-600 rounded-lg shadow-sm cursor-not-allowed"
                     disabled
                     readonly
