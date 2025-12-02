@@ -13,12 +13,36 @@ class PegawaiController extends Controller
     /**
      * Tampilkan daftar pegawai.
      */
-    public function index()
+// app/Http/Controllers/Admin/PegawaiController.php
+
+    public function index(Request $request)
     {
-        $pegawai = Pegawai::with('user')->paginate(10);
+        $query = Pegawai::query()->with('user');
+
+        // Search: NIP, Nama, Jabatan, Departemen
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('nip', 'like', "%{$search}%")
+                ->orWhere('nama_lengkap', 'like', "%{$search}%")
+                ->orWhere('jabatan', 'like', "%{$search}%")
+                ->orWhere('departemen', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter Status
+        if ($request->filled('status')) {
+            $query->where('status_kepegawaian', $request->status);
+        }
+
+        // Pagination dengan query string (preserve query parameters for pagination links)
+        $pegawai = $query->latest()
+                        ->paginate(10)
+                        ->appends($request->query());
 
         return view('admin.pegawai.index', compact('pegawai'));
     }
+
 
     /**
      * Form tambah pegawai.

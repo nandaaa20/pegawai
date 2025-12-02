@@ -20,7 +20,7 @@
         
         {{-- KPI Cards --}}
         <div class="mb-8">
-            <h3 class="text-sm font-bold text-gray-700 uppercase tracking-wider mb-4">Key Performance Indicators</h3>
+            <h3 class="text-sm font-bold text-gray-700 uppercase tracking-wider mb-4">Indikator Kinerja Utama</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {{-- Total Pegawai --}}
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
@@ -32,7 +32,7 @@
                                 </svg>
                             </div>
                         </div>
-                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Total Workforce</p>
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Total Pegawai</p>
                         <p class="text-3xl font-bold text-gray-900">{{ $totalPegawai }}</p>
                     </div>
                     <div class="h-1 bg-slate-700"></div>
@@ -48,10 +48,10 @@
                                 </svg>
                             </div>
                         </div>
-                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Active Employees</p>
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Pegawai Aktif</p>
                         <p class="text-3xl font-bold text-emerald-700">{{ $pegawaiAktif }}</p>
                         <p class="text-xs text-emerald-600 font-semibold mt-2">
-                            {{ $totalPegawai > 0 ? round(($pegawaiAktif / $totalPegawai) * 100, 1) : 0 }}% of workforce
+                            {{ $totalPegawai > 0 ? round(($pegawaiAktif / $totalPegawai) * 100, 1) : 0 }}% dari total pegawai
                         </p>
                     </div>
                     <div class="h-1 bg-emerald-600"></div>
@@ -67,10 +67,10 @@
                                 </svg>
                             </div>
                         </div>
-                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Contract Workers</p>
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Pegawai Kontrak</p>
                         <p class="text-3xl font-bold text-amber-700">{{ $pegawaiKontrak }}</p>
                         <p class="text-xs text-amber-600 font-semibold mt-2">
-                            {{ $totalPegawai > 0 ? round(($pegawaiKontrak / $totalPegawai) * 100, 1) : 0 }}% of workforce
+                            {{ $totalPegawai > 0 ? round(($pegawaiKontrak / $totalPegawai) * 100, 1) : 0 }}% dari total pegawai
                         </p>
                     </div>
                     <div class="h-1 bg-amber-500"></div>
@@ -86,10 +86,10 @@
                                 </svg>
                             </div>
                         </div>
-                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Inactive</p>
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Tidak Aktif</p>
                         <p class="text-3xl font-bold text-gray-700">{{ $pegawaiNonAktif }}</p>
                         <p class="text-xs text-gray-500 font-semibold mt-2">
-                            {{ $totalPegawai > 0 ? round(($pegawaiNonAktif / $totalPegawai) * 100, 1) : 0 }}% of workforce
+                            {{ $totalPegawai > 0 ? round(($pegawaiNonAktif / $totalPegawai) * 100, 1) : 0 }}% dari total pegawai
                         </p>
                     </div>
                     <div class="h-1 bg-gray-400"></div>
@@ -99,7 +99,7 @@
 
         {{-- Operational Reports --}}
         <div>
-            <h3 class="text-sm font-bold text-gray-700 uppercase tracking-wider mb-4">Operational Reports</h3>
+            <h3 class="text-sm font-bold text-gray-700 uppercase tracking-wider mb-4">Laporan Operasional</h3>
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 
                 {{-- Leave Management --}}
@@ -112,8 +112,8 @@
                                 </svg>
                             </div>
                             <div>
-                                <h4 class="font-bold text-gray-900">Leave Management</h4>
-                                <p class="text-xs text-gray-600">Request status overview</p>
+                                <h4 class="font-bold text-gray-900">Manajemen Cuti</h4>
+                                <p class="text-xs text-gray-600">Ringkasan status permohonan</p>
                             </div>
                         </div>
                     </div>
@@ -121,29 +121,29 @@
                         <div class="space-y-4">
                             <div class="flex items-center justify-between p-4 bg-yellow-50 rounded-lg border border-yellow-200">
                                 <div>
-                                    <p class="text-xs font-semibold text-yellow-800 uppercase">Pending Review</p>
-                                    <p class="text-xs text-yellow-700 mt-0.5">Awaiting approval</p>
+                                    <p class="text-xs font-semibold text-yellow-800 uppercase">Menunggu Persetujuan</p>
+                                    <p class="text-xs text-yellow-700 mt-0.5">Menunggu disetujui</p>
                                 </div>
                                 <p class="text-2xl font-bold text-yellow-800">{{ $cutiPending }}</p>
                             </div>
                             <div class="flex items-center justify-between p-4 bg-green-50 rounded-lg border border-green-200">
                                 <div>
-                                    <p class="text-xs font-semibold text-green-800 uppercase">Approved</p>
-                                    <p class="text-xs text-green-700 mt-0.5">Granted requests</p>
+                                    <p class="text-xs font-semibold text-green-800 uppercase">Disetujui</p>
+                                    <p class="text-xs text-green-700 mt-0.5">Permohonan dikabulkan</p>
                                 </div>
                                 <p class="text-2xl font-bold text-green-800">{{ $cutiDisetujui }}</p>
                             </div>
                             <div class="flex items-center justify-between p-4 bg-red-50 rounded-lg border border-red-200">
                                 <div>
-                                    <p class="text-xs font-semibold text-red-800 uppercase">Rejected</p>
-                                    <p class="text-xs text-red-700 mt-0.5">Declined requests</p>
+                                    <p class="text-xs font-semibold text-red-800 uppercase">Ditolak</p>
+                                    <p class="text-xs text-red-700 mt-0.5">Permohonan ditolak</p>
                                 </div>
                                 <p class="text-2xl font-bold text-red-800">{{ $cutiDitolak }}</p>
                             </div>
                         </div>
                         <div class="mt-4 pt-4 border-t border-gray-200 flex items-center justify-between">
-                            <p class="text-xs text-gray-600"><strong>{{ $cutiBulanIni }}</strong> requests this month</p>
-                            <a href="{{ route('admin.laporan.cuti') }}" class="text-xs font-semibold text-blue-600 hover:text-blue-800">View Report →</a>
+                            <p class="text-xs text-gray-600"><strong>{{ $cutiBulanIni }}</strong> permohonan bulan ini</p>
+                            <a href="{{ route('admin.laporan.cuti') }}" class="text-xs font-semibold text-blue-600 hover:text-blue-800">Lihat Laporan →</a>
                         </div>
                     </div>
                 </div>
@@ -158,32 +158,32 @@
                                 </svg>
                             </div>
                             <div>
-                                <h4 class="font-bold text-gray-900">Attendance Report</h4>
-                                <p class="text-xs text-gray-600">Today's workforce status</p>
+                                <h4 class="font-bold text-gray-900">Laporan Kehadiran</h4>
+                                <p class="text-xs text-gray-600">Status pegawai hari ini</p>
                             </div>
                         </div>
                     </div>
                     <div class="p-6">
                         <div class="grid grid-cols-2 gap-3">
                             <div class="p-4 bg-green-50 rounded-lg border border-green-200 text-center">
-                                <p class="text-xs font-bold text-green-700 uppercase mb-1">Present</p>
+                                <p class="text-xs font-bold text-green-700 uppercase mb-1">Hadir</p>
                                 <p class="text-2xl font-bold text-green-800">{{ $hadirHariIni }}</p>
                             </div>
                             <div class="p-4 bg-amber-50 rounded-lg border border-amber-200 text-center">
-                                <p class="text-xs font-bold text-amber-700 uppercase mb-1">Leave</p>
+                                <p class="text-xs font-bold text-amber-700 uppercase mb-1">Izin</p>
                                 <p class="text-2xl font-bold text-amber-800">{{ $izinHariIni }}</p>
                             </div>
                             <div class="p-4 bg-sky-50 rounded-lg border border-sky-200 text-center">
-                                <p class="text-xs font-bold text-sky-700 uppercase mb-1">Sick</p>
+                                <p class="text-xs font-bold text-sky-700 uppercase mb-1">Sakit</p>
                                 <p class="text-2xl font-bold text-sky-800">{{ $sakitHariIni }}</p>
                             </div>
                             <div class="p-4 bg-red-50 rounded-lg border border-red-200 text-center">
-                                <p class="text-xs font-bold text-red-700 uppercase mb-1">Absent</p>
+                                <p class="text-xs font-bold text-red-700 uppercase mb-1">Alpha</p>
                                 <p class="text-2xl font-bold text-red-800">{{ $alphaHariIni }}</p>
                             </div>
                         </div>
                         <div class="mt-4 pt-4 border-t border-gray-200 text-center">
-                            <a href="{{ route('admin.laporan.kehadiran') }}" class="text-xs font-semibold text-blue-600 hover:text-blue-800">View Detailed Report →</a>
+                            <a href="{{ route('admin.laporan.kehadiran') }}" class="text-xs font-semibold text-blue-600 hover:text-blue-800">Lihat Laporan Lengkap →</a>
                         </div>
                     </div>
                 </div>
@@ -198,8 +198,8 @@
                                 </svg>
                             </div>
                             <div>
-                                <h4 class="font-bold text-gray-900">Department Distribution</h4>
-                                <p class="text-xs text-gray-600">Top 5 departments</p>
+                                <h4 class="font-bold text-gray-900">Distribusi Departemen</h4>
+                                <p class="text-xs text-gray-600">5 departemen teratas</p>
                             </div>
                         </div>
                     </div>
@@ -212,12 +212,12 @@
                                 </div>
                             @empty
                                 <div class="text-center py-8">
-                                    <p class="text-sm text-gray-500">No department data available</p>
+                                    <p class="text-sm text-gray-500">Belum ada data departemen</p>
                                 </div>
                             @endforelse
                         </div>
                         <div class="mt-4 pt-4 border-t border-gray-200 text-center">
-                            <a href="{{ route('admin.laporan.pegawai') }}" class="text-xs font-semibold text-blue-600 hover:text-blue-800">View Full Report →</a>
+                            <a href="{{ route('admin.laporan.pegawai') }}" class="text-xs font-semibold text-blue-600 hover:text-blue-800">Lihat Laporan Lengkap →</a>
                         </div>
                     </div>
                 </div>
