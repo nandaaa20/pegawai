@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Cuti;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class CutiController extends Controller
 {
@@ -39,6 +41,24 @@ class CutiController extends Controller
 
         $cuti->load('pegawai');
 
+        $jumlahHari = $cuti->jumlah_hari;
+        if (!$jumlahHari || $jumlahHari <= 0) {
+            $start = Carbon::parse($cuti->tanggal_mulai);
+            $end = Carbon::parse($cuti->tanggal_selesai);
+            $jumlahHari = 0;
+            $currentDate = $start->copy();
+
+            while ($currentDate->lte($end)) {
+                if (!$currentDate->isWeekend()) {
+                    $jumlahHari++;
+                }
+                $currentDate->addDay();
+            }
+        }
+
+        if ($request->status === 'disetujui' && $cuti->pegawai) {
+            $sisaCuti = $cuti->pegawai->sisa_cuti ?? 0;
+            if ($sisaCuti < $jumlahHari) {
         if ($request->status === 'disetujui' && $cuti->pegawai) {
             $sisaCuti = $cuti->pegawai->sisa_cuti ?? 0;
             if ($sisaCuti < $cuti->jumlah_hari) {
@@ -46,6 +66,21 @@ class CutiController extends Controller
                     ->route('admin.cuti.show', $cuti)
                     ->with('error', 'Sisa cuti pegawai tidak mencukupi untuk menyetujui pengajuan ini.');
             }
+        }
+
+        DB::transaction(function () use ($request, $cuti, $jumlahHari) {
+            if ($request->status === 'disetujui' && $cuti->pegawai) {
+                $sisaCuti = $cuti->pegawai->sisa_cuti ?? 0;
+                $cuti->pegawai->update([
+                    'sisa_cuti' => $sisaCuti - $jumlahHari,
+                ]);
+            }
+
+            $cuti->update([
+                'status'        => $request->status,
+                'catatan_admin' => $request->catatan_admin,
+            ]);
+        });
 
             $cuti->pegawai->update([
                 'sisa_cuti' => $sisaCuti - $cuti->jumlah_hari,
