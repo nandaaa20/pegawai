@@ -7,7 +7,6 @@ use App\Mail\CutiStatusToPegawai;
 use App\Models\Cuti;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
 
 class CutiController extends Controller
@@ -61,6 +60,9 @@ class CutiController extends Controller
         if ($request->status === 'disetujui' && $cuti->pegawai) {
             $sisaCuti = $cuti->pegawai->sisa_cuti ?? 0;
             if ($sisaCuti < $jumlahHari) {
+        if ($request->status === 'disetujui' && $cuti->pegawai) {
+            $sisaCuti = $cuti->pegawai->sisa_cuti ?? 0;
+            if ($sisaCuti < $cuti->jumlah_hari) {
                 return redirect()
                     ->route('admin.cuti.show', $cuti)
                     ->with('error', 'Sisa cuti pegawai tidak mencukupi untuk menyetujui pengajuan ini.');
@@ -85,6 +87,15 @@ class CutiController extends Controller
         if ($pegawaiEmail) {
             Mail::to($pegawaiEmail)->send(new CutiStatusToPegawai($cuti));
         }
+            $cuti->pegawai->update([
+                'sisa_cuti' => $sisaCuti - $cuti->jumlah_hari,
+            ]);
+        }
+
+        $cuti->update([
+            'status'        => $request->status,
+            'catatan_admin' => $request->catatan_admin,
+        ]);
 
         return redirect()
             ->route('admin.cuti.show', $cuti)

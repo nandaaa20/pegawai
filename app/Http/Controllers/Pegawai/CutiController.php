@@ -104,6 +104,7 @@ class CutiController extends Controller
         }
 
         $cuti = Cuti::create([
+        Cuti::create([
             'pegawai_id' => $pegawai->id,
             'tanggal_mulai' => $validated['tanggal_mulai'],
             'tanggal_selesai' => $validated['tanggal_selesai'],
