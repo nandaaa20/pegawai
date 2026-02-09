@@ -9,14 +9,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('cuti', function (Blueprint $table) {
-            $table->integer('jumlah_hari')->default(0)->after('tanggal_selesai');
+            if (!Schema::hasColumn('cuti', 'jumlah_hari')) {
+                $table->integer('jumlah_hari')->default(0)->after('tanggal_selesai');
+            }
         });
     }
 
     public function down(): void
     {
         Schema::table('cuti', function (Blueprint $table) {
-            $table->dropColumn('jumlah_hari');
+            if (Schema::hasColumn('cuti', 'jumlah_hari')) {
+                $table->dropColumn('jumlah_hari');
+            }
         });
     }
 };
