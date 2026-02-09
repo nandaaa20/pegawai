@@ -92,6 +92,14 @@ class CutiController extends Controller
             $currentDate->addDay();
         }
 
+        if ($pegawai->sisa_cuti < $jumlahHariKerja) {
+            return back()
+                ->withErrors([
+                    'sisa_cuti' => 'Sisa cuti tidak mencukupi untuk durasi yang diajukan.',
+                ])
+                ->withInput();
+        }
+
         Cuti::create([
             'pegawai_id' => $pegawai->id,
             'tanggal_mulai' => $validated['tanggal_mulai'],
