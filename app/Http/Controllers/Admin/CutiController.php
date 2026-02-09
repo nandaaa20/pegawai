@@ -37,6 +37,21 @@ class CutiController extends Controller
             'catatan_admin' => 'nullable|string',
         ]);
 
+        $cuti->load('pegawai');
+
+        if ($request->status === 'disetujui' && $cuti->pegawai) {
+            $sisaCuti = $cuti->pegawai->sisa_cuti ?? 0;
+            if ($sisaCuti < $cuti->jumlah_hari) {
+                return redirect()
+                    ->route('admin.cuti.show', $cuti)
+                    ->with('error', 'Sisa cuti pegawai tidak mencukupi untuk menyetujui pengajuan ini.');
+            }
+
+            $cuti->pegawai->update([
+                'sisa_cuti' => $sisaCuti - $cuti->jumlah_hari,
+            ]);
+        }
+
         $cuti->update([
             'status'        => $request->status,
             'catatan_admin' => $request->catatan_admin,
