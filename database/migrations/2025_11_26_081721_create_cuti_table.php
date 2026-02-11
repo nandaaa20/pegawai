@@ -13,6 +13,7 @@ return new class extends Migration
             $table->foreignId('pegawai_id')->constrained('pegawai')->onDelete('cascade');
             $table->date('tanggal_mulai');
             $table->date('tanggal_selesai');
+            $table->integer('jumlah_hari')->default(0);
             $table->string('jenis_cuti', 50)->nullable(); // tahunan, sakit, dll
             $table->text('alasan')->nullable();
             $table->enum('status', ['pending', 'disetujui', 'ditolak'])->default('pending');

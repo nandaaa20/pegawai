@@ -29,6 +29,8 @@ return new class extends Migration
             $table->date('tanggal_masuk')->nullable();
             $table->enum('status_kepegawaian', ['aktif', 'nonaktif', 'kontrak'])
                   ->default('aktif');
+            $table->integer('kuota_cuti')->default(0);
+            $table->integer('sisa_cuti')->default(0);
 
             $table->timestamps();
         });
