@@ -10,28 +10,19 @@ return new class extends Migration
     {
         Schema::create('pegawai', function (Blueprint $table) {
             $table->id();
-
-            $table->foreignId('user_id')
-                  ->constrained('users')
-                  ->onDelete('cascade');
-
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('nip', 50)->unique();
             $table->string('nama_lengkap', 150);
             $table->string('jabatan', 100)->nullable();
             $table->string('departemen', 100)->nullable();
-
             $table->enum('jenis_kelamin', ['L', 'P'])->nullable();
             $table->date('tanggal_lahir')->nullable();
-
             $table->string('no_telepon', 20)->nullable();
             $table->text('alamat')->nullable();
-
             $table->date('tanggal_masuk')->nullable();
-            $table->enum('status_kepegawaian', ['aktif', 'nonaktif', 'kontrak'])
-                  ->default('aktif');
-            $table->integer('kuota_cuti')->default(0);
-            $table->integer('sisa_cuti')->default(0);
-
+            $table->enum('status_kepegawaian', ['aktif', 'nonaktif', 'kontrak'])->default('aktif');
+            $table->unsignedInteger('kuota_cuti')->default(12);
+            $table->unsignedInteger('sisa_cuti')->default(12);
             $table->timestamps();
         });
     }

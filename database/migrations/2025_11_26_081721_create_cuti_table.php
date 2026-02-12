@@ -10,15 +10,18 @@ return new class extends Migration
     {
         Schema::create('cuti', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('pegawai_id')->constrained('pegawai')->onDelete('cascade');
+            $table->foreignId('pegawai_id')->constrained('pegawai')->cascadeOnDelete();
             $table->date('tanggal_mulai');
             $table->date('tanggal_selesai');
-            $table->integer('jumlah_hari')->default(0);
-            $table->string('jenis_cuti', 50)->nullable(); // tahunan, sakit, dll
+            $table->unsignedInteger('jumlah_hari')->default(0);
+            $table->string('jenis_cuti', 50)->nullable();
             $table->text('alasan')->nullable();
             $table->enum('status', ['pending', 'disetujui', 'ditolak'])->default('pending');
             $table->text('catatan_admin')->nullable();
             $table->timestamps();
+
+            $table->index(['pegawai_id', 'status']);
+            $table->index(['tanggal_mulai', 'tanggal_selesai']);
         });
     }
 
