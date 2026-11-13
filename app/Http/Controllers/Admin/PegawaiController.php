@@ -149,8 +149,7 @@ class PegawaiController extends Controller
     public function update(Request $request, Pegawai $pegawai)
     {
         $request->validate([
-            'nip'               => 'required|string|max:50|unique:pegawai,nip,' . $pegawai->id
-                                                        . '|unique:users,nip,' . $pegawai->user_id,
+            'nip'               => 'required|string|max:50|unique:pegawai,nip,' . $pegawai->id . '|unique:users,nip,' . $pegawai->user_id,
             'nama_lengkap'      => 'required|string|max:150',
             'jabatan'           => 'nullable|string|max:100',
             'departemen'        => 'nullable|string|max:100',
