@@ -55,7 +55,7 @@ class LaporanKehadiranController extends Controller
             ->unique()
             ->values();
 
-        return view('admin.laporan.kehadiran.index', compact(
+        return view('admin.Laporan.Kehadiran.index', compact(
             'kehadiran',
             'bulan',
             'tahun',
@@ -96,7 +96,7 @@ class LaporanKehadiranController extends Controller
 
         $printedAt = now();
 
-        $pdf = Pdf::loadView('admin.laporan.kehadiran.pdf', [
+        $pdf = Pdf::loadView('admin.Laporan.Kehadiran.pdf', [
             'kehadiran'   => $kehadiran,
             'bulan'       => $bulan,
             'tahun'       => $tahun,
