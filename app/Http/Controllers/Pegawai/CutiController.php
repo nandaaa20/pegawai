@@ -66,8 +66,8 @@ class CutiController extends Controller
                     }
                 },
             ],
-            'jenis_cuti' => 'required|string|max:100',
-            'alasan' => 'required|string',
+            'jenis_cuti' => 'required|string|max:50',
+            'alasan' => 'required|string|max:5000',
         ], [
             'tanggal_mulai.required' => 'Tanggal mulai cuti harus diisi.',
             'tanggal_mulai.after_or_equal' => 'Tanggal mulai cuti tidak boleh di masa lampau.',
@@ -92,7 +92,7 @@ class CutiController extends Controller
             $currentDate->addDay();
         }
 
-        if ($pegawai->sisa_cuti < $jumlahHariKerja) {
+        if ($jumlahHariKerja <= 0 || $pegawai->sisa_cuti < $jumlahHariKerja) {
             return back()
                 ->withErrors([
                     'sisa_cuti' => 'Sisa cuti tidak mencukupi untuk durasi yang diajukan.',
