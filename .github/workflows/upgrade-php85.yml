@@ -40,7 +40,9 @@ jobs:
         run: |
           apt-get update
           DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends git unzip curl ca-certificates libonig-dev libxml2-dev libzip-dev nodejs npm
-          php -m | grep -i '^dom
+          php -m | grep -i '^dom$'
+          php -m | grep -i '^mbstring$'
+          docker-php-ext-install pdo_mysql zip
           curl -fsSL https://getcomposer.org/installer -o /tmp/composer-setup.php
           EXPECTED=$(curl -fsSL https://composer.github.io/installer.sig)
           ACTUAL=$(php -r "echo hash_file('sha384', '/tmp/composer-setup.php');")
