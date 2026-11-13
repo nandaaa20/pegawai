@@ -11,11 +11,13 @@ if ($LASTEXITCODE -ne 0) { throw 'npm not found.' }
 
 # Laravel's @vite checks public/hot before the built manifest. If the hot file
 # points to a dev server that is not running, the login appears unstyled.
-$hot = Join-Path (Get-Location) 'public\hot'
+$hot = Join-Path (Get-Location) 'public\ui-hot'
 if (Test-Path $hot) {
     Write-Host 'Removing stale public/hot so Laravel serves built assets...' -ForegroundColor Yellow
     Remove-Item $hot -Force
 }
+$legacyHot = Join-Path (Get-Location) 'public\\hot'
+if (Test-Path $legacyHot) { Remove-Item $legacyHot -Force }
 Write-Host 'Installing locked frontend dependencies...' -ForegroundColor Cyan
 & npm ci
 if ($LASTEXITCODE -ne 0) { throw 'npm ci failed.' }
@@ -23,12 +25,12 @@ Write-Host 'Compiling Tailwind and Vite CSS/JS...' -ForegroundColor Cyan
 & npm run build
 if ($LASTEXITCODE -ne 0) { throw 'npm run build failed.' }
 
-$manifest = Join-Path (Get-Location) 'public\build\manifest.json'
+$manifest = Join-Path (Get-Location) 'public\ui\manifest.json'
 if (-not (Test-Path $manifest)) { throw 'Vite manifest missing after build.' }
 $files = (Get-Content $manifest -Raw | ConvertFrom-Json).PSObject.Properties.Value
 $cssFound = $false
 foreach ($entry in $files) {
-    if ($entry.file -match '\.css$' -and (Test-Path (Join-Path (Get-Location) ('public\build\' + $entry.file.Replace('/', '\'))))) {
+    if ($entry.file -match '\.css$' -and (Test-Path (Join-Path (Get-Location) ('public\ui\' + $entry.file.Replace('/', '\'))))) {
         $cssFound = $true
     }
 }
