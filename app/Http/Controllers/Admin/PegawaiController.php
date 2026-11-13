@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Password;
 
 class PegawaiController extends Controller
 {
@@ -74,7 +75,7 @@ class PegawaiController extends Controller
             'alamat'            => 'nullable|string',
             'tanggal_masuk'     => 'nullable|date',
             'status_kepegawaian'=> 'nullable|in:aktif,nonaktif,kontrak',
-            'email' => 'nullable|email|max:255|unique:users,email',
+            'email' => 'required|email|max:255|unique:users,email',
         ]);
 
         // Password awal default
@@ -109,9 +110,14 @@ class PegawaiController extends Controller
         ]);
         });
 
+        $status = Password::sendResetLink(['email' => $request->email]);
+
         return redirect()
             ->route('admin.pegawai.index')
-            ->with('success', 'Data pegawai dan akun login berhasil dibuat. Password awal: ' . $passwordAwal);
+            ->with($status === Password::RESET_LINK_SENT ? 'success' : 'error',
+                $status === Password::RESET_LINK_SENT
+                    ? 'Pegawai dibuat. Tautan pembuatan password telah dikirim ke email pegawai.'
+                    : 'Pegawai dibuat, tetapi email aktivasi belum terkirim. Periksa konfigurasi email lalu kirim ulang tautan reset password.');
     }
 
     /**
@@ -154,7 +160,7 @@ class PegawaiController extends Controller
             'alamat'            => 'nullable|string',
             'tanggal_masuk'     => 'nullable|date',
             'status_kepegawaian'=> 'nullable|in:aktif,nonaktif,kontrak',
-            'email' => 'nullable|email|max:255|unique:users,email,' . $pegawai->user_id,
+            'email' => 'required|email|max:255|unique:users,email,' . $pegawai->user_id,
         ]);
 
         DB::transaction(function () use ($request, $pegawai) {
@@ -235,16 +241,14 @@ class PegawaiController extends Controller
 
     public function resetPassword(Pegawai $pegawai)
     {
-        if ($pegawai->user) {
-            $passwordBaru = Str::random(20);
-            $pegawai->user->update([
-                'password' => Hash::make($passwordBaru),
-            ]);
-
-            return back()->with('success', 'Password sementara baru: ' . $passwordBaru');
+        if (! $pegawai->user || ! $pegawai->user->email) {
+            return back()->with('error', 'Email akun pegawai belum tersedia.');
         }
 
-        return back()->with('error', 'Akun user belum terhubung dengan pegawai ini.');
-    }
+        $status = Password::sendResetLink(['email' => $pegawai->user->email]);
 
+        return $status === Password::RESET_LINK_SENT
+            ? back()->with('success', 'Tautan reset password telah dikirim ke email pegawai.')
+            : back()->with('error', 'Tautan reset password belum terkirim. Periksa konfigurasi email atau coba lagi nanti.');
+    }
 }
