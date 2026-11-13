@@ -84,4 +84,34 @@ class PegawaiAccountTest extends TestCase
 
         $this->assertDatabaseMissing('pegawai', ['nip' => 'PEG-NOEMAIL']);
     }
+    public function test_admin_can_update_employee_without_changing_nip(): void
+    {
+        $user = User::create([
+            'name' => 'Pegawai Lama',
+            'nip' => 'PEG-EDIT',
+            'email' => 'edit@example.test',
+            'password' => 'test-password',
+            'role' => 'pegawai',
+        ]);
+        $pegawai = Pegawai::create([
+            'user_id' => $user->id,
+            'nip' => 'PEG-EDIT',
+            'nama_lengkap' => 'Pegawai Lama',
+            'kuota_cuti' => 12,
+            'sisa_cuti' => 12,
+        ]);
+
+        $this->actingAs($this->admin())
+            ->put(route('admin.pegawai.update', $pegawai), [
+                'nip' => 'PEG-EDIT',
+                'nama_lengkap' => 'Pegawai Diperbarui',
+                'email' => 'edit@example.test',
+            ])
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('admin.pegawai.index'));
+
+        $this->assertSame('Pegawai Diperbarui', $pegawai->fresh()->nama_lengkap);
+        $this->assertSame('PEG-EDIT', $user->fresh()->nip);
+    }
+
 }
