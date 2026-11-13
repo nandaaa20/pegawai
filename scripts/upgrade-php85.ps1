@@ -14,7 +14,7 @@ Write-Host "Backup of original Composer files: $backup"
 Write-Host 'Upgrading Laravel and compatible development dependencies...'
 & composer require 'laravel/framework:^12.69' 'laravel/sanctum:^4.2' 'laravel/tinker:^2.10' 'guzzlehttp/guzzle:^7.15.2' 'barryvdh/laravel-dompdf:^3.1' --no-update
 if ($LASTEXITCODE -ne 0) { throw 'Composer constraint change failed; originals are in backup.' }
-& composer require --dev 'laravel/breeze:^2.4' 'nunomaduro/collision:^8.6' 'phpunit/phpunit:^11.5' 'spatie/laravel-ignition:^2.13' --no-update
+& composer require --dev 'laravel/breeze:^2.4' 'nunomaduro/collision:^8.6' 'phpunit/phpunit:^11.5' 'spatie/laravel-ignition:~2.12.0' --no-update
 if ($LASTEXITCODE -ne 0) { throw 'Dev dependency constraint change failed; originals are in backup.' }
 & composer update --with-all-dependencies --no-interaction
 if ($LASTEXITCODE -ne 0) { throw 'Dependency solver failed. See output above; do not commit yet. Backups are preserved.' }
