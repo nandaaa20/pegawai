@@ -10,7 +10,7 @@
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800&display=swap" rel="stylesheet">
     {{-- Critical fallback: keep authentication usable if Vite dev assets cannot be reached. --}}
     <link rel="stylesheet" href="{{ asset('css/simpeg-auth-fallback.css') }}">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @include('layouts.partials.ui-assets')
 </head>
 <body class="antialiased">
     <div class="simpeg-auth-page">
