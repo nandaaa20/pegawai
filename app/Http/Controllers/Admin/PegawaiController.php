@@ -7,6 +7,8 @@ use App\Models\Pegawai;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class PegawaiController extends Controller
 {
@@ -72,16 +74,18 @@ class PegawaiController extends Controller
             'alamat'            => 'nullable|string',
             'tanggal_masuk'     => 'nullable|date',
             'status_kepegawaian'=> 'nullable|in:aktif,nonaktif,kontrak',
+            'email' => 'nullable|email|max:255|unique:users,email',
         ]);
 
         // Password awal default
-        $passwordAwal = 'pegawai123';
+        $passwordAwal = Str::random(20);
 
         // 1. Buat akun user (login)
+        DB::transaction(function () use ($request, $passwordAwal) {
         $user = User::create([
             'nip'      => $request->nip,
             'name'     => $request->nama_lengkap, // <-- WAJIB PAKAI INI
-            'email'    => null,
+            'email'    => $request->email,
             'password' => Hash::make($passwordAwal),
             'role'     => 'pegawai',
         ]);
@@ -100,7 +104,10 @@ class PegawaiController extends Controller
             'alamat'            => $request->alamat,
             'tanggal_masuk'     => $request->tanggal_masuk,
             'status_kepegawaian'=> $request->status_kepegawaian ?? 'aktif',
+            'kuota_cuti' => 12,
+            'sisa_cuti' => 12,
         ]);
+        });
 
         return redirect()
             ->route('admin.pegawai.index')
@@ -147,13 +154,16 @@ class PegawaiController extends Controller
             'alamat'            => 'nullable|string',
             'tanggal_masuk'     => 'nullable|date',
             'status_kepegawaian'=> 'nullable|in:aktif,nonaktif,kontrak',
+            'email' => 'nullable|email|max:255|unique:users,email,' . $pegawai->user_id,
         ]);
 
+        DB::transaction(function () use ($request, $pegawai) {
         // Update data user (akun login)
         if ($pegawai->user) {
             $pegawai->user->update([
                 'nip'  => $request->nip,
                 'name' => $request->nama_lengkap, // <-- WAJIB DICANTUMKAN
+                'email' => $request->email,
             ]);
         }
 
@@ -171,6 +181,8 @@ class PegawaiController extends Controller
             'tanggal_masuk'     => $request->tanggal_masuk,
             'status_kepegawaian'=> $request->status_kepegawaian ?? $pegawai->status_kepegawaian,
         ]);
+
+        });
 
         return redirect()
             ->route('admin.pegawai.index')
@@ -224,11 +236,12 @@ class PegawaiController extends Controller
     public function resetPassword(Pegawai $pegawai)
     {
         if ($pegawai->user) {
+            $passwordBaru = Str::random(20);
             $pegawai->user->update([
-                'password' => Hash::make('pegawai123'), // password default
+                'password' => Hash::make($passwordBaru),
             ]);
 
-            return back()->with('success', 'Password berhasil direset ke: pegawai123');
+            return back()->with('success', 'Password sementara baru: ' . $passwordBaru');
         }
 
         return back()->with('error', 'Akun user belum terhubung dengan pegawai ini.');
