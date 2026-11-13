@@ -1,0 +1,73 @@
+name: Laravel tests
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
+      - fix/simpeg-hardening-20261113
+
+jobs:
+  phpunit:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: simpeg_test
+          MYSQL_USER: simpeg
+          MYSQL_PASSWORD: simpeg_test_password
+          MYSQL_ROOT_PASSWORD: root_test_password
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -u root -proot_test_password"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify runner PHP and extensions
+        run: |
+          php -v
+          php -m
+          php -r 'foreach (["pdo_mysql", "mbstring", "dom", "fileinfo"] as $extension) { if (!extension_loaded($extension)) { fwrite(STDERR, "Missing PHP extension: {$extension}\\n"); exit(1); } }'
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Build frontend assets
+        run: |
+          npm ci
+          ROLLUP_VERSION=$(node -p "require('./node_modules/rollup/package.json').version")
+          npm install --no-save --no-package-lock "@rollup/rollup-linux-x64-gnu@$ROLLUP_VERSION"
+          npm run build
+
+      - name: Prepare Laravel environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+        env:
+          APP_ENV: testing
+
+      - name: Lint changed PHP application and test files
+        run: |
+          find app database/migrations tests -type f -name '*.php' -print0 | xargs -0 -n1 php -l
+
+      - name: Run feature and unit tests against MySQL
+        run: php artisan test
+        env:
+          APP_ENV: testing
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: simpeg_test
+          DB_USERNAME: simpeg
+          DB_PASSWORD: simpeg_test_password
+          CACHE_DRIVER: array
+          SESSION_DRIVER: array
+          QUEUE_CONNECTION: sync
+          MAIL_MAILER: array

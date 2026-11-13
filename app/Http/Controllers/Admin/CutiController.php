@@ -4,17 +4,17 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cuti;
+use App\Models\Pegawai;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
+use Illuminate\Validation\ValidationException;
 
 class CutiController extends Controller
 {
     public function index()
     {
-        $cuti = Cuti::with('pegawai')
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $cuti = Cuti::with('pegawai')->latest()->get();
 
         return view('admin.cuti.index', compact('cuti'));
     }
@@ -22,79 +22,76 @@ class CutiController extends Controller
     public function show(Cuti $cuti)
     {
         $cuti->load('pegawai');
+
         return view('admin.cuti.show', compact('cuti'));
     }
 
     public function updateStatus(Request $request, Cuti $cuti)
     {
-        // Jika status sudah pernah diputuskan, jangan boleh diubah lagi
-        if ($cuti->status !== 'pending') {
-            return redirect()
-                ->route('admin.cuti.show', $cuti)
-                ->with('error', 'Keputusan cuti sudah ditetapkan dan tidak dapat diubah lagi.');
-        }
-
-        $request->validate([
-            'status'        => 'required|in:disetujui,ditolak',
-            'catatan_admin' => 'nullable|string',
+        $validated = $request->validate([
+            'status' => 'required|in:disetujui,ditolak',
+            'catatan_admin' => 'nullable|string|max:5000',
         ]);
 
-        $cuti->load('pegawai');
+        try {
+            DB::transaction(function () use ($cuti, $validated) {
+                // Lock the request first, then the employee, in a consistent order.
+                $lockedCuti = Cuti::query()->lockForUpdate()->findOrFail($cuti->id);
 
-        $jumlahHari = $cuti->jumlah_hari;
-        if (!$jumlahHari || $jumlahHari <= 0) {
-            $start = Carbon::parse($cuti->tanggal_mulai);
-            $end = Carbon::parse($cuti->tanggal_selesai);
-            $jumlahHari = 0;
-            $currentDate = $start->copy();
-
-            while ($currentDate->lte($end)) {
-                if (!$currentDate->isWeekend()) {
-                    $jumlahHari++;
+                if ($lockedCuti->status !== 'pending') {
+                    throw ValidationException::withMessages([
+                        'status' => 'Keputusan cuti sudah ditetapkan dan tidak dapat diubah lagi.',
+                    ]);
                 }
-                $currentDate->addDay();
-            }
+
+                if ($validated['status'] === 'disetujui') {
+                    $pegawai = Pegawai::query()->lockForUpdate()->find($lockedCuti->pegawai_id);
+
+                    if (! $pegawai) {
+                        throw ValidationException::withMessages([
+                            'status' => 'Data pegawai tidak ditemukan.',
+                        ]);
+                    }
+
+                    $jumlahHari = (int) $lockedCuti->jumlah_hari;
+                    if ($jumlahHari <= 0) {
+                        $start = Carbon::parse($lockedCuti->tanggal_mulai);
+                        $end = Carbon::parse($lockedCuti->tanggal_selesai);
+
+                        if ($end->lt($start)) {
+                            throw ValidationException::withMessages([
+                                'status' => 'Rentang tanggal cuti tidak valid.',
+                            ]);
+                        }
+
+                        $jumlahHari = 0;
+                        for ($date = $start->copy(); $date->lte($end); $date->addDay()) {
+                            if (! $date->isWeekend()) {
+                                $jumlahHari++;
+                            }
+                        }
+                    }
+
+                    if ($jumlahHari <= 0 || (int) $pegawai->sisa_cuti < $jumlahHari) {
+                        throw ValidationException::withMessages([
+                            'status' => 'Sisa cuti pegawai tidak mencukupi atau durasi cuti tidak valid.',
+                        ]);
+                    }
+
+                    $pegawai->decrement('sisa_cuti', $jumlahHari);
+                    $lockedCuti->jumlah_hari = $jumlahHari;
+                }
+
+                $lockedCuti->status = $validated['status'];
+                $lockedCuti->catatan_admin = $validated['catatan_admin'] ?? null;
+                $lockedCuti->save();
+            }, 3);
+        } catch (ValidationException $exception) {
+            return redirect()->route('admin.cuti.show', $cuti)
+                ->with('error', collect($exception->errors())->flatten()->first());
         }
 
-        if ($request->status === 'disetujui' && $cuti->pegawai) {
-            $sisaCuti = $cuti->pegawai->sisa_cuti ?? 0;
-            if ($sisaCuti < $jumlahHari) {
-        if ($request->status === 'disetujui' && $cuti->pegawai) {
-            $sisaCuti = $cuti->pegawai->sisa_cuti ?? 0;
-            if ($sisaCuti < $cuti->jumlah_hari) {
-                return redirect()
-                    ->route('admin.cuti.show', $cuti)
-                    ->with('error', 'Sisa cuti pegawai tidak mencukupi untuk menyetujui pengajuan ini.');
-            }
-        }
-
-        DB::transaction(function () use ($request, $cuti, $jumlahHari) {
-            if ($request->status === 'disetujui' && $cuti->pegawai) {
-                $sisaCuti = $cuti->pegawai->sisa_cuti ?? 0;
-                $cuti->pegawai->update([
-                    'sisa_cuti' => $sisaCuti - $jumlahHari,
-                ]);
-            }
-
-            $cuti->update([
-                'status'        => $request->status,
-                'catatan_admin' => $request->catatan_admin,
-            ]);
-        });
-
-            $cuti->pegawai->update([
-                'sisa_cuti' => $sisaCuti - $cuti->jumlah_hari,
-            ]);
-        }
-
-        $cuti->update([
-            'status'        => $request->status,
-            'catatan_admin' => $request->catatan_admin,
-        ]);
-
-        return redirect()
-            ->route('admin.cuti.show', $cuti)
+        return redirect()->route('admin.cuti.show', $cuti)
             ->with('success', 'Status pengajuan cuti berhasil diperbarui.');
     }
-
 }
