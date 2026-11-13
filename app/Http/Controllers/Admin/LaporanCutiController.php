@@ -64,7 +64,7 @@ class LaporanCutiController extends Controller
             ->unique()
             ->values();
 
-        return view('admin.laporan.cuti.index', compact(
+        return view('admin.Laporan.cuti.index', compact(
             'cuti',
             'status',
             'jenis',
@@ -115,7 +115,7 @@ class LaporanCutiController extends Controller
 
         $printedAt = now();
 
-        $pdf = Pdf::loadView('admin.laporan.cuti.pdf', [
+        $pdf = Pdf::loadView('admin.Laporan.cuti.pdf', [
             'cuti'         => $cuti,
             'status'       => $status,
             'jenis'        => $jenis,
