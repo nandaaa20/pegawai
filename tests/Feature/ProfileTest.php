@@ -21,14 +21,19 @@ class ProfileTest extends TestCase
         $response->assertOk();
     }
 
-    public function test_profile_information_can_be_updated(): void
+    public function test_profile_email_can_be_updated_but_name_and_nip_remain_admin_managed(): void
     {
         $user = User::factory()->create();
+
+        $originalName = $user->name;
+        $originalNip = $user->nip;
 
         $response = $this
             ->actingAs($user)
             ->patch('/profile', [
                 'name' => 'Test User',
+                'nip' => 'UNAUTHORIZED-NIP',
+                'role' => 'admin',
                 'email' => 'test@example.com',
             ]);
 
@@ -38,7 +43,9 @@ class ProfileTest extends TestCase
 
         $user->refresh();
 
-        $this->assertSame('Test User', $user->name);
+        $this->assertSame($originalName, $user->name);
+        $this->assertSame($originalNip, $user->nip);
+        $this->assertSame('pegawai', $user->role);
         $this->assertSame('test@example.com', $user->email);
         $this->assertNull($user->email_verified_at);
     }
