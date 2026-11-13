@@ -25,7 +25,7 @@ if ($LASTEXITCODE -ne 0) { throw 'npm run build failed.' }
 
 $manifest = Join-Path (Get-Location) 'public\build\manifest.json'
 if (-not (Test-Path $manifest)) { throw 'Vite manifest missing after build.' }
-$files = (Get-Content $manifest -Raw | ConvertFrom-Json -AsHashtable).Values
+$files = (Get-Content $manifest -Raw | ConvertFrom-Json).PSObject.Properties.Value
 $cssFound = $false
 foreach ($entry in $files) {
     if ($entry.file -match '\.css$' -and (Test-Path (Join-Path (Get-Location) ('public\build\' + $entry.file.Replace('/', '\'))))) {
