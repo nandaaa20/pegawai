@@ -1,227 +1,110 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-                <h2 class="font-bold text-2xl text-gray-900 tracking-tight">Dashboard Administrator</h2>
-                <p class="text-sm text-gray-500 mt-1">Sistem Informasi Manajemen Pegawai</p>
+                <p class="simpeg-eyebrow mb-2">WORKSPACE OVERVIEW</p>
+                <h2>Selamat datang, {{ \Illuminate\Support\Str::before(auth()->user()->name, ' ') }} <span aria-hidden="true">👋</span></h2>
+                <p class="mt-1.5 text-sm text-slate-500">Berikut ringkasan operasional kepegawaian hari ini.</p>
             </div>
-            <div class="text-right">
-                <p class="text-xs text-gray-500 uppercase tracking-wider font-semibold">
-                    {{ now()->locale('id')->isoFormat('dddd') }}
-                </p>
-                <p class="text-sm text-gray-700 font-bold">
-                    {{ now()->locale('id')->isoFormat('D MMMM YYYY') }}
-                </p>
+            <div class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-xs font-semibold text-slate-600">
+                <svg class="h-4 w-4 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/></svg>
+                {{ now()->locale('id')->isoFormat('dddd, D MMMM YYYY') }}
             </div>
         </div>
     </x-slot>
 
-    <div class="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
-        
-        {{-- KPI Cards --}}
-        <div class="mb-8">
-            <h3 class="text-sm font-bold text-gray-700 uppercase tracking-wider mb-4">Indikator Kinerja Utama</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {{-- Total Pegawai --}}
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="w-12 h-12 bg-slate-100 rounded-lg flex items-center justify-center">
-                                <svg class="w-6 h-6 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                                </svg>
-                            </div>
-                        </div>
-                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Total Pegawai</p>
-                        <p class="text-3xl font-bold text-gray-900">{{ $totalPegawai }}</p>
-                    </div>
-                    <div class="h-1 bg-slate-700"></div>
-                </div>
-
-                {{-- Pegawai Aktif --}}
-                <div class="bg-white rounded-xl shadow-sm border border-emerald-200 overflow-hidden">
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
-                                <svg class="w-6 h-6 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                            </div>
-                        </div>
-                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Pegawai Aktif</p>
-                        <p class="text-3xl font-bold text-emerald-700">{{ $pegawaiAktif }}</p>
-                        <p class="text-xs text-emerald-600 font-semibold mt-2">
-                            {{ $totalPegawai > 0 ? round(($pegawaiAktif / $totalPegawai) * 100, 1) : 0 }}% dari total pegawai
-                        </p>
-                    </div>
-                    <div class="h-1 bg-emerald-600"></div>
-                </div>
-
-                {{-- Pegawai Kontrak --}}
-                <div class="bg-white rounded-xl shadow-sm border border-amber-200 overflow-hidden">
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
-                                <svg class="w-6 h-6 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                            </div>
-                        </div>
-                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Pegawai Kontrak</p>
-                        <p class="text-3xl font-bold text-amber-700">{{ $pegawaiKontrak }}</p>
-                        <p class="text-xs text-amber-600 font-semibold mt-2">
-                            {{ $totalPegawai > 0 ? round(($pegawaiKontrak / $totalPegawai) * 100, 1) : 0 }}% dari total pegawai
-                        </p>
-                    </div>
-                    <div class="h-1 bg-amber-500"></div>
-                </div>
-
-                {{-- Pegawai Nonaktif --}}
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                                <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
-                                </svg>
-                            </div>
-                        </div>
-                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Tidak Aktif</p>
-                        <p class="text-3xl font-bold text-gray-700">{{ $pegawaiNonAktif }}</p>
-                        <p class="text-xs text-gray-500 font-semibold mt-2">
-                            {{ $totalPegawai > 0 ? round(($pegawaiNonAktif / $totalPegawai) * 100, 1) : 0 }}% dari total pegawai
-                        </p>
-                    </div>
-                    <div class="h-1 bg-gray-400"></div>
-                </div>
+    <div class="space-y-7">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <div class="simpeg-stat-card">
+                <div class="flex justify-between"><span class="simpeg-stat-label">Total pegawai</span><span class="simpeg-stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M17 5a3 3 0 0 1 0 6m1 3a5 5 0 0 1 3 4.5V20"/></svg></span></div>
+                <div class="simpeg-stat-value">{{ number_format($totalPegawai) }}</div>
+                <p class="mt-3 text-xs text-slate-500">Terdaftar di dalam sistem</p>
+                <div class="absolute bottom-0 left-0 h-1 w-full bg-sky-500"></div>
+            </div>
+            <div class="simpeg-stat-card">
+                <div class="flex justify-between"><span class="simpeg-stat-label">Pegawai aktif</span><span class="simpeg-stat-icon !bg-emerald-50 !text-emerald-600"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg></span></div>
+                <div class="simpeg-stat-value">{{ number_format($pegawaiAktif) }}</div>
+                <p class="mt-3 text-xs font-semibold text-emerald-700">{{ $totalPegawai ? round($pegawaiAktif / $totalPegawai * 100) : 0 }}% dari total pegawai</p>
+                <div class="absolute bottom-0 left-0 h-1 w-full bg-emerald-500"></div>
+            </div>
+            <div class="simpeg-stat-card">
+                <div class="flex justify-between"><span class="simpeg-stat-label">Menunggu persetujuan</span><span class="simpeg-stat-icon !bg-amber-50 !text-amber-600"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span></div>
+                <div class="simpeg-stat-value">{{ number_format($cutiPending) }}</div>
+                <p class="mt-3 text-xs text-slate-500">Permohonan cuti pending</p>
+                <div class="absolute bottom-0 left-0 h-1 w-full bg-amber-400"></div>
+            </div>
+            <div class="simpeg-stat-card">
+                <div class="flex justify-between"><span class="simpeg-stat-label">Hadir hari ini</span><span class="simpeg-stat-icon !bg-violet-50 !text-violet-600"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="17" rx="2"/><path d="M8 2v4m8-4v4M4 10h16m-12 5 2 2 4-4"/></svg></span></div>
+                <div class="simpeg-stat-value">{{ number_format($hadirHariIni) }}</div>
+                <p class="mt-3 text-xs text-slate-500">Kehadiran tercatat hari ini</p>
+                <div class="absolute bottom-0 left-0 h-1 w-full bg-violet-500"></div>
             </div>
         </div>
 
-        {{-- Operational Reports --}}
-        <div>
-            <h3 class="text-sm font-bold text-gray-700 uppercase tracking-wider mb-4">Laporan Operasional</h3>
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                
-                {{-- Leave Management --}}
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200">
-                    <div class="bg-gradient-to-r from-slate-50 to-slate-100 px-6 py-4 border-b border-gray-200">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-gray-900">Manajemen Cuti</h4>
-                                <p class="text-xs text-gray-600">Ringkasan status permohonan</p>
-                            </div>
-                        </div>
+        <div class="grid gap-5 xl:grid-cols-5">
+            <section class="simpeg-card xl:col-span-3">
+                <div class="simpeg-card-heading">
+                    <div><h3 class="text-base font-extrabold text-slate-900">Distribusi pegawai</h3><p class="mt-1 text-xs text-slate-500">Komposisi berdasarkan status kepegawaian</p></div>
+                    <a href="{{ route('admin.pegawai.index') }}" class="text-xs font-bold text-sky-600 hover:text-sky-700">Lihat pegawai &rarr;</a>
+                </div>
+                <div class="grid items-center gap-7 p-6 sm:grid-cols-[180px,1fr] sm:p-8">
+                    @php
+                        $totalStatus = max(1, $pegawaiAktif + $pegawaiKontrak + $pegawaiNonAktif);
+                        $activePct = round($pegawaiAktif / $totalStatus * 100, 2);
+                        $contractPct = round($pegawaiKontrak / $totalStatus * 100, 2);
+                    @endphp
+                    <div class="mx-auto flex h-44 w-44 items-center justify-center rounded-full" style="background: conic-gradient(#0ea5e9 0% {{ $activePct }}%, #f59e0b {{ $activePct }}% {{ $activePct + $contractPct }}%, #cbd5e1 {{ $activePct + $contractPct }}% 100%);" role="img" aria-label="Aktif {{ $pegawaiAktif }}, kontrak {{ $pegawaiKontrak }}, nonaktif {{ $pegawaiNonAktif }}">
+                        <div class="flex h-[132px] w-[132px] flex-col items-center justify-center rounded-full bg-white"><span class="text-[30px] font-extrabold text-slate-900">{{ number_format($totalPegawai) }}</span><span class="text-[11px] font-semibold text-slate-400">Total pegawai</span></div>
                     </div>
-                    <div class="p-6">
-                        <div class="space-y-4">
-                            <div class="flex items-center justify-between p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                                <div>
-                                    <p class="text-xs font-semibold text-yellow-800 uppercase">Menunggu Persetujuan</p>
-                                    <p class="text-xs text-yellow-700 mt-0.5">Menunggu disetujui</p>
-                                </div>
-                                <p class="text-2xl font-bold text-yellow-800">{{ $cutiPending }}</p>
+                    <div class="space-y-5">
+                        @foreach([['label' => 'Aktif', 'count' => $pegawaiAktif, 'color' => 'bg-sky-500'], ['label' => 'Kontrak', 'count' => $pegawaiKontrak, 'color' => 'bg-amber-400'], ['label' => 'Nonaktif', 'count' => $pegawaiNonAktif, 'color' => 'bg-slate-300']] as $status)
+                            <div>
+                                <div class="mb-2 flex items-center justify-between text-xs"><span class="flex items-center gap-2 font-semibold text-slate-600"><span class="h-2.5 w-2.5 rounded-full {{ $status['color'] }}"></span>{{ $status['label'] }}</span><span class="font-extrabold text-slate-900">{{ $status['count'] }}</span></div>
+                                <div class="simpeg-progress-track"><div class="h-full rounded-full {{ $status['color'] }}" style="width: {{ $totalPegawai ? round($status['count'] / $totalPegawai * 100) : 0 }}%"></div></div>
                             </div>
-                            <div class="flex items-center justify-between p-4 bg-green-50 rounded-lg border border-green-200">
-                                <div>
-                                    <p class="text-xs font-semibold text-green-800 uppercase">Disetujui</p>
-                                    <p class="text-xs text-green-700 mt-0.5">Permohonan dikabulkan</p>
-                                </div>
-                                <p class="text-2xl font-bold text-green-800">{{ $cutiDisetujui }}</p>
-                            </div>
-                            <div class="flex items-center justify-between p-4 bg-red-50 rounded-lg border border-red-200">
-                                <div>
-                                    <p class="text-xs font-semibold text-red-800 uppercase">Ditolak</p>
-                                    <p class="text-xs text-red-700 mt-0.5">Permohonan ditolak</p>
-                                </div>
-                                <p class="text-2xl font-bold text-red-800">{{ $cutiDitolak }}</p>
-                            </div>
-                        </div>
-                        <div class="mt-4 pt-4 border-t border-gray-200 flex items-center justify-between">
-                            <p class="text-xs text-gray-600"><strong>{{ $cutiBulanIni }}</strong> permohonan bulan ini</p>
-                            <a href="{{ route('admin.laporan.cuti') }}" class="text-xs font-semibold text-blue-600 hover:text-blue-800">Lihat Laporan →</a>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
-
-                {{-- Attendance Report --}}
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200">
-                    <div class="bg-gradient-to-r from-slate-50 to-slate-100 px-6 py-4 border-b border-gray-200">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-emerald-600 rounded-lg flex items-center justify-center">
-                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-gray-900">Laporan Kehadiran</h4>
-                                <p class="text-xs text-gray-600">Status pegawai hari ini</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <div class="grid grid-cols-2 gap-3">
-                            <div class="p-4 bg-green-50 rounded-lg border border-green-200 text-center">
-                                <p class="text-xs font-bold text-green-700 uppercase mb-1">Hadir</p>
-                                <p class="text-2xl font-bold text-green-800">{{ $hadirHariIni }}</p>
-                            </div>
-                            <div class="p-4 bg-amber-50 rounded-lg border border-amber-200 text-center">
-                                <p class="text-xs font-bold text-amber-700 uppercase mb-1">Izin</p>
-                                <p class="text-2xl font-bold text-amber-800">{{ $izinHariIni }}</p>
-                            </div>
-                            <div class="p-4 bg-sky-50 rounded-lg border border-sky-200 text-center">
-                                <p class="text-xs font-bold text-sky-700 uppercase mb-1">Sakit</p>
-                                <p class="text-2xl font-bold text-sky-800">{{ $sakitHariIni }}</p>
-                            </div>
-                            <div class="p-4 bg-red-50 rounded-lg border border-red-200 text-center">
-                                <p class="text-xs font-bold text-red-700 uppercase mb-1">Alpha</p>
-                                <p class="text-2xl font-bold text-red-800">{{ $alphaHariIni }}</p>
-                            </div>
-                        </div>
-                        <div class="mt-4 pt-4 border-t border-gray-200 text-center">
-                            <a href="{{ route('admin.laporan.kehadiran') }}" class="text-xs font-semibold text-blue-600 hover:text-blue-800">Lihat Laporan Lengkap →</a>
-                        </div>
-                    </div>
+            </section>
+            <section class="simpeg-card xl:col-span-2">
+                <div class="simpeg-card-heading"><div><h3 class="text-base font-extrabold text-slate-900">Status cuti</h3><p class="mt-1 text-xs text-slate-500">Ringkasan semua permohonan</p></div><span class="simpeg-tag simpeg-tag-warning">{{ $cutiPending }} pending</span></div>
+                <div class="space-y-4 p-6">
+                    @foreach([['label' => 'Menunggu persetujuan', 'count' => $cutiPending, 'bg' => 'bg-amber-50', 'ink' => 'text-amber-700', 'symbol' => '◷'], ['label' => 'Disetujui', 'count' => $cutiDisetujui, 'bg' => 'bg-emerald-50', 'ink' => 'text-emerald-700', 'symbol' => '✓'], ['label' => 'Ditolak', 'count' => $cutiDitolak, 'bg' => 'bg-rose-50', 'ink' => 'text-rose-700', 'symbol' => '×']] as $stat)
+                        <div class="flex items-center gap-3 rounded-xl border border-slate-100 p-3.5"><span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-lg font-bold {{ $stat['bg'] }} {{ $stat['ink'] }}">{{ $stat['symbol'] }}</span><span class="flex-1 text-xs font-semibold text-slate-600">{{ $stat['label'] }}</span><span class="text-xl font-extrabold text-slate-900">{{ $stat['count'] }}</span></div>
+                    @endforeach
+                    <a class="simpeg-action-link-secondary mt-2 w-full" href="{{ route('admin.cuti.index') }}">Kelola pengajuan <span aria-hidden="true">&rarr;</span></a>
                 </div>
-
-                {{-- Department Distribution --}}
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200">
-                    <div class="bg-gradient-to-r from-slate-50 to-slate-100 px-6 py-4 border-b border-gray-200">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
-                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h10m-6 4h6"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-gray-900">Distribusi Departemen</h4>
-                                <p class="text-xs text-gray-600">5 departemen teratas</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <div class="space-y-3">
-                            @forelse($pegawaiPerDepartemen as $row)
-                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
-                                    <span class="text-sm font-semibold text-gray-800 truncate">{{ $row->departemen }}</span>
-                                    <span class="text-lg font-bold text-gray-900">{{ $row->total }}</span>
-                                </div>
-                            @empty
-                                <div class="text-center py-8">
-                                    <p class="text-sm text-gray-500">Belum ada data departemen</p>
-                                </div>
-                            @endforelse
-                        </div>
-                        <div class="mt-4 pt-4 border-t border-gray-200 text-center">
-                            <a href="{{ route('admin.laporan.pegawai') }}" class="text-xs font-semibold text-blue-600 hover:text-blue-800">Lihat Laporan Lengkap →</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            </section>
         </div>
+
+        <div class="grid gap-5 xl:grid-cols-5">
+            <section class="simpeg-card xl:col-span-3">
+                <div class="simpeg-card-heading"><div><h3 class="text-base font-extrabold text-slate-900">Pegawai per departemen</h3><p class="mt-1 text-xs text-slate-500">Lima departemen dengan pegawai terbanyak</p></div></div>
+                <div class="space-y-5 p-6">
+                    @forelse($pegawaiPerDepartemen as $departemen)
+                        <div><div class="mb-2 flex justify-between gap-3 text-xs"><span class="font-semibold text-slate-600">{{ $departemen->departemen }}</span><span class="font-extrabold text-slate-900">{{ $departemen->total }} orang</span></div><div class="simpeg-progress-track"><div class="simpeg-progress-fill" style="width: {{ $totalPegawai ? round($departemen->total / $totalPegawai * 100) : 0 }}%"></div></div></div>
+                    @empty
+                        <div class="py-12 text-center text-sm text-slate-500">Belum ada data departemen. Tambahkan pegawai untuk melihat distribusi.</div>
+                    @endforelse
+                </div>
+            </section>
+            <section class="simpeg-card xl:col-span-2">
+                <div class="simpeg-card-heading"><div><h3 class="text-base font-extrabold text-slate-900">Kehadiran hari ini</h3><p class="mt-1 text-xs text-slate-500">Status yang tercatat untuk {{ now()->format('d/m/Y') }}</p></div></div>
+                <div class="grid grid-cols-2 gap-3 p-6">
+                    @foreach([['name' => 'Hadir', 'count' => $hadirHariIni, 'color' => 'text-emerald-700', 'bg' => 'bg-emerald-50'], ['name' => 'Izin', 'count' => $izinHariIni, 'color' => 'text-sky-700', 'bg' => 'bg-sky-50'], ['name' => 'Sakit', 'count' => $sakitHariIni, 'color' => 'text-amber-700', 'bg' => 'bg-amber-50'], ['name' => 'Alpa', 'count' => $alphaHariIni, 'color' => 'text-rose-700', 'bg' => 'bg-rose-50']] as $stat)
+                        <div class="rounded-xl p-4 {{ $stat['bg'] }}"><div class="text-2xl font-extrabold {{ $stat['color'] }}">{{ $stat['count'] }}</div><div class="mt-1 text-xs font-semibold text-slate-600">{{ $stat['name'] }}</div></div>
+                    @endforeach
+                </div>
+            </section>
+        </div>
+
+        <section>
+            <div class="mb-4 flex items-center justify-between"><div><h3 class="text-base font-extrabold text-slate-900">Akses cepat</h3><p class="mt-1 text-xs text-slate-500">Mulai pekerjaan yang paling sering dilakukan.</p></div></div>
+            <div class="grid gap-4 md:grid-cols-3">
+                <a class="simpeg-quick-action" href="{{ route('admin.pegawai.create') }}"><span class="simpeg-quick-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><circle cx="10" cy="8" r="3.5"/><path d="M3 20v-1a7 7 0 0 1 14 0v1M19 8v8m-4-4h8"/></svg></span><span class="flex-1"><span class="block text-sm font-bold text-slate-900">Tambah pegawai</span><span class="mt-1 block text-xs text-slate-500">Daftarkan pegawai baru</span></span><span class="text-sky-500">→</span></a>
+                <a class="simpeg-quick-action" href="{{ route('admin.kehadiran.create') }}"><span class="simpeg-quick-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4m8-4v4M3 10h18m-13 5 2 2 4-4"/></svg></span><span class="flex-1"><span class="block text-sm font-bold text-slate-900">Input kehadiran</span><span class="mt-1 block text-xs text-slate-500">Catat absensi pegawai</span></span><span class="text-sky-500">→</span></a>
+                <a class="simpeg-quick-action" href="{{ route('admin.laporan.pegawai') }}"><span class="simpeg-quick-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path d="M5 20V5a2 2 0 0 1 2-2h7l5 5v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1Zm9-17v6h5M9 13h6m-6 4h6"/></svg></span><span class="flex-1"><span class="block text-sm font-bold text-slate-900">Lihat laporan</span><span class="mt-1 block text-xs text-slate-500">Rekap data kepegawaian</span></span><span class="text-sky-500">→</span></a>
+            </div>
+        </section>
     </div>
 </x-app-layout>

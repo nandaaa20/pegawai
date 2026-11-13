@@ -1,119 +1,50 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Data Pengajuan Cuti
-            </h2>
-            <span class="text-sm text-gray-500">
-                Total: {{ $cuti->count() }} pengajuan
-            </span>
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div><p class="simpeg-eyebrow mb-2">EMPLOYEE MANAGEMENT</p><h2>Manajemen cuti</h2><p class="mt-1.5 text-sm text-slate-500">Kelola permohonan dan pantau status pengajuan cuti pegawai.</p></div>
+            <span class="simpeg-tag simpeg-tag-warning self-start sm:self-auto">{{ $cuti->where('status', 'pending')->count() }} menunggu persetujuan</span>
         </div>
     </x-slot>
 
-    <div class="py-6 max-w-7xl mx-auto sm:px-6 lg:px-8">
-        @if(session('success'))
-            <div class="mb-6 bg-green-50 border-l-4 border-green-400 p-4 rounded-r-lg">
-                <div class="flex items-start">
-                    <svg class="w-5 h-5 text-green-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                    <div class="ml-3">
-                        <p class="text-sm font-medium text-green-800">{{ session('success') }}</p>
-                    </div>
-                    <button type="button" onclick="this.closest('.mb-6').remove()" class="ml-auto text-green-600 hover:text-green-800">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        @endif
+    <div class="space-y-5">
+        <div class="grid gap-4 sm:grid-cols-3">
+            <div class="simpeg-stat-card"><div class="flex items-center justify-between"><span class="simpeg-stat-label">Total pengajuan</span><span class="simpeg-stat-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path d="M6 3h9l4 4v13H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><path d="M14 3v5h5M8 13h8m-8 4h5"/></svg></span></div><div class="simpeg-stat-value">{{ $cuti->count() }}</div><p class="mt-2 text-xs text-slate-500">Seluruh permohonan tercatat</p></div>
+            <div class="simpeg-stat-card"><div class="flex items-center justify-between"><span class="simpeg-stat-label">Menunggu</span><span class="simpeg-stat-icon !bg-amber-50 !text-amber-600"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span></div><div class="simpeg-stat-value">{{ $cuti->where('status', 'pending')->count() }}</div><p class="mt-2 text-xs text-amber-700">Perlu ditinjau oleh admin</p></div>
+            <div class="simpeg-stat-card"><div class="flex items-center justify-between"><span class="simpeg-stat-label">Disetujui</span><span class="simpeg-stat-icon !bg-emerald-50 !text-emerald-600"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg></span></div><div class="simpeg-stat-value">{{ $cuti->where('status', 'disetujui')->count() }}</div><p class="mt-2 text-xs text-emerald-700">Permohonan yang telah disetujui</p></div>
+        </div>
 
-        <div class="bg-white shadow-sm rounded-lg p-6">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
-                <div>
-                    <h3 class="text-base font-semibold text-gray-800">Daftar Pengajuan Cuti</h3>
-                    <p class="text-xs text-gray-500">Kelola pengajuan cuti pegawai dan lacak status setiap permohonan.</p>
-                </div>
+        <section class="simpeg-card overflow-hidden">
+            <div class="simpeg-card-heading">
+                <div><h3 class="text-base font-extrabold text-slate-900">Daftar pengajuan</h3><p class="mt-1 text-xs text-slate-500">Periksa detail permohonan sebelum memutuskan status.</p></div>
+                <span class="text-xs font-semibold text-slate-400">{{ $cuti->count() }} pengajuan</span>
             </div>
-
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200 text-sm">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Tanggal</th>
-                            <th class="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Pegawai</th>
-                            <th class="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Jenis</th>
-                            <th class="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
-                            <th class="px-4 py-2 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-100">
-                        @forelse($cuti as $c)
-                            <tr class="hover:bg-gray-50 transition-colors">
-                                <td class="px-4 py-2 align-top whitespace-nowrap">
-                                    <span class="font-mono text-xs bg-gray-100 px-2 py-1 rounded">
-                                        {{ \Carbon\Carbon::parse($c->tanggal_mulai)->format('d M Y') }}
-                                    </span>
-                                    <span class="mx-1 text-gray-400">—</span>
-                                    <span class="font-mono text-xs bg-gray-100 px-2 py-1 rounded">
-                                        {{ \Carbon\Carbon::parse($c->tanggal_selesai)->format('d M Y') }}
-                                    </span>
-                                </td>
-                                <td class="px-4 py-2 align-top">
-                                    <div class="font-semibold text-gray-800">
-                                        {{ $c->pegawai->nama_lengkap ?? '-' }}
-                                    </div>
-                                    <div class="text-xs text-gray-500">
-                                        NIP: {{ $c->pegawai->nip ?? '-' }}
-                                    </div>
-                                </td>
-                                <td class="px-4 py-2 align-top">
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-800 text-xs font-medium">
-                                        {{ $c->jenis_cuti ?? '-' }}
-                                    </span>
-                                </td>
-                                <td class="px-4 py-2 align-top">
-                                    @php
-                                        $st = strtolower($c->status);
-                                        $statusClass = match($st) {
-                                            'pending' => 'bg-amber-100 text-amber-900',
-                                            'disetujui' => 'bg-green-100 text-green-900',
-                                            'ditolak' => 'bg-red-100 text-red-800',
-                                            default => 'bg-gray-100 text-gray-700',
-                                        };
-                                    @endphp
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $statusClass }}">
-                                        {{ ucfirst($c->status) }}
-                                    </span>
-                                </td>
-                                <td class="px-4 py-2 align-top text-center">
-                                    <a href="{{ route('admin.cuti.show', $c) }}"
-                                       class="inline-flex items-center text-blue-600 hover:underline font-medium transition-colors">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                        </svg>
-                                        Detail
-                                    </a>
-                                </td>
+                <table class="min-w-full text-sm">
+                    <thead><tr><th>Tanggal cuti</th><th>Nama pegawai</th><th>Jenis cuti</th><th>Status</th><th class="!text-right">Aksi</th></tr></thead>
+                    <tbody>
+                        @forelse($cuti as $pengajuan)
+                            @php
+                                $status = strtolower($pengajuan->status ?? '');
+                                $badge = match ($status) {
+                                    'pending' => 'simpeg-tag-warning',
+                                    'disetujui' => 'simpeg-tag-success',
+                                    'ditolak' => 'simpeg-tag-danger',
+                                    default => 'bg-slate-100 text-slate-600',
+                                };
+                            @endphp
+                            <tr>
+                                <td class="whitespace-nowrap"><span class="font-semibold text-slate-700">{{ \Carbon\Carbon::parse($pengajuan->tanggal_mulai)->format('d M Y') }}</span><span class="px-1.5 text-slate-400">–</span><span class="text-slate-600">{{ \Carbon\Carbon::parse($pengajuan->tanggal_selesai)->format('d M Y') }}</span></td>
+                                <td><span class="block font-bold text-slate-900">{{ $pengajuan->pegawai->nama_lengkap ?? '-' }}</span><span class="mt-1 block text-xs text-slate-500">NIP {{ $pengajuan->pegawai->nip ?? '-' }}</span></td>
+                                <td><span class="text-xs font-semibold text-slate-600">{{ $pengajuan->jenis_cuti ?? '-' }}</span></td>
+                                <td><span class="simpeg-tag {{ $badge }}">{{ ucfirst($pengajuan->status ?? '-') }}</span></td>
+                                <td class="text-right"><a href="{{ route('admin.cuti.show', $pengajuan) }}" class="inline-flex items-center gap-1 font-bold text-sky-600 hover:text-sky-700">Lihat detail <span aria-hidden="true">→</span></a></td>
                             </tr>
                         @empty
-                            <tr>
-                                <td colspan="5" class="px-4 py-10 text-center text-gray-500">
-                                    <div class="flex flex-col items-center justify-center">
-                                        <svg class="w-12 h-12 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                        </svg>
-                                        <h4 class="text-base font-medium mb-1">Belum ada pengajuan cuti</h4>
-                                        <p class="text-xs">Data pengajuan cuti belum tersedia.</p>
-                                    </div>
-                                </td>
-                            </tr>
+                            <tr><td colspan="5" class="!px-6 !py-20 text-center"><div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-sky-50 text-sky-500"><svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 9h6m-6 4h6"/></svg></div><p class="mt-4 text-sm font-bold text-slate-900">Belum ada pengajuan cuti</p><p class="mt-1 text-xs text-slate-500">Pengajuan pegawai akan ditampilkan di sini.</p></td></tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
-        </div>
+        </section>
     </div>
 </x-app-layout>
