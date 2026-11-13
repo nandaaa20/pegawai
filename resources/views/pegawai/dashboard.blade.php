@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <div><p class="simpeg-eyebrow mb-2">MY WORKSPACE</p><h2>Halo, {{ Str::before($user->name, ' ') }} <span aria-hidden="true">👋</span></h2><p class="mt-1.5 text-sm text-slate-500">Pantau kehadiran, cuti, dan aktivitas kepegawaianmu di sini.</p></div>
+            <div><p class="simpeg-eyebrow mb-2">MY WORKSPACE</p><h2>Halo, {{ \Illuminate\Support\Str::before($user->name, ' ') }} <span aria-hidden="true">👋</span></h2><p class="mt-1.5 text-sm text-slate-500">Pantau kehadiran, cuti, dan aktivitas kepegawaianmu di sini.</p></div>
             <div class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-xs font-semibold text-slate-600">
                 <svg class="h-4 w-4 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/></svg>{{ now()->locale('id')->isoFormat('dddd, D MMMM YYYY') }}
             </div>
