@@ -77,7 +77,7 @@
     .simpeg-auth-panel input[type="text"], .simpeg-auth-panel input[type="password"], .simpeg-auth-panel input[type="email"] { @apply w-full rounded-xl border-slate-200 bg-slate-50/80 px-4 py-3 text-sm text-slate-800 shadow-none transition-colors focus:border-sky-500 focus:bg-white focus:ring-sky-500/20; }
     .simpeg-auth-panel input[type="checkbox"] { @apply rounded border-slate-300 text-sky-500 focus:ring-sky-500; }
     /* Apply consistent visual treatment to older CRUD and report screens without modifying their behavior. */
-    .simpeg-main .bg-white.shadow-sm, .simpeg-main .bg-white.rounded-lg, .simpeg-main .bg-white.rounded-xl { @apply border border-slate-200/80 shadow-[0_5px_28px_rgba(17,24,39,.035)]; border-radius: 1rem; }
+    .simpeg-main .bg-white.shadow-sm, .simpeg-main .bg-white.rounded-lg, .simpeg-main .bg-white.rounded-xl { border: 1px solid rgb(226 232 240 / .8); box-shadow: 0 5px 28px rgb(17 24 39 / .035); border-radius: 1rem; }
     .simpeg-main table { @apply w-full text-sm; }
     .simpeg-main table thead { @apply bg-slate-50/90; }
     .simpeg-main table thead th { @apply whitespace-nowrap border-b border-slate-200 px-4 py-3.5 text-left text-[11px] font-bold uppercase tracking-[.085em] text-slate-500; }
