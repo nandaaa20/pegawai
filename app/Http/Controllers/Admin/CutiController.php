@@ -14,7 +14,7 @@ class CutiController extends Controller
 {
     public function index()
     {
-        $cuti = Cuti::with('pegawai')->latest()->paginate(20);
+        $cuti = Cuti::with('pegawai')->latest()->get();
 
         return view('admin.cuti.index', compact('cuti'));
     }
