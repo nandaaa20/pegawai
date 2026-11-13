@@ -54,6 +54,55 @@ class WorkspaceUiTest extends TestCase
             ->assertSee('ui/'.$js);
     }
 
+    public function test_all_administrator_pages_render_with_the_shared_ui_stylesheet(): void
+    {
+        $this->actingAs($this->user('admin'));
+
+        foreach ([
+            'admin.dashboard',
+            'admin.pegawai.index',
+            'admin.pegawai.create',
+            'admin.cuti.index',
+            'admin.kehadiran.index',
+            'admin.kehadiran.create',
+            'admin.laporan.pegawai',
+            'admin.laporan.cuti',
+            'admin.laporan.kehadiran',
+            'profile.edit',
+        ] as $route) {
+            $this->get(route($route))
+                ->assertOk()
+                ->assertSee('ui/assets/app-', false);
+        }
+    }
+
+    public function test_employee_pages_render_with_the_shared_ui_stylesheet(): void
+    {
+        $user = $this->user('pegawai');
+
+        Pegawai::create([
+            'user_id' => $user->id,
+            'nip' => $user->nip,
+            'nama_lengkap' => $user->name,
+            'status_kepegawaian' => 'aktif',
+            'kuota_cuti' => 12,
+            'sisa_cuti' => 12,
+        ]);
+
+        $this->actingAs($user);
+
+        foreach ([
+            'pegawai.dashboard',
+            'pegawai.cuti.index',
+            'pegawai.cuti.create',
+            'profile.edit',
+        ] as $route) {
+            $this->get(route($route))
+                ->assertOk()
+                ->assertSee('ui/assets/app-', false);
+        }
+    }
+
     public function test_admin_dashboard_renders_new_workspace_and_navigation(): void
     {
         $this->actingAs($this->user('admin'))
