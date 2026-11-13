@@ -1,0 +1,57 @@
+name: Bundle portfolio UI assets
+
+on:
+  push:
+    branches:
+      - feature/ui-ux-rebuild
+    paths-ignore:
+      - 'public/ui/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Install Linux Rollup native module
+        run: |
+          ROLLUP_VERSION=$(node -p "require('./node_modules/rollup/package.json').version")
+          npm install --no-save --no-package-lock "@rollup/rollup-linux-x64-gnu@$ROLLUP_VERSION"
+
+      - name: Build offline-ready CSS and JavaScript
+        run: npm run build
+
+      - name: Verify layout bundle
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const manifest = JSON.parse(fs.readFileSync('public/ui/manifest.json', 'utf8'));
+          for (const entry of ['resources/css/app.css', 'resources/js/app.js']) {
+            if (!manifest[entry]?.file) throw new Error('Missing Vite entry: ' + entry);
+            if (!fs.existsSync('public/ui/' + manifest[entry].file)) throw new Error('Missing bundle file: ' + manifest[entry].file);
+          }
+          const css = fs.readFileSync('public/ui/' + manifest['resources/css/app.css'].file, 'utf8');
+          for (const token of ['.simpeg-auth-page', '.simpeg-sidebar', '.simpeg-stat-card', '.simpeg-main']) {
+            if (!css.includes(token)) throw new Error('Missing Tailwind design selector: ' + token);
+          }
+          console.log('Verified packaged design system:', css.length, 'CSS bytes');
+          NODE
+
+      - name: Commit compiled assets to UI branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -f public/ui/manifest.json public/ui/assets
+          if ! git diff --cached --quiet; then
+            git commit -m "Bundle built UI assets for offline-ready Laravel portfolio"
+            git push origin HEAD:feature/ui-ux-rebuild
+          fi
