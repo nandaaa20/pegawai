@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - fix/simpeg-hardening-20261113
 
 jobs:
   phpunit:
