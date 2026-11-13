@@ -31,6 +31,29 @@ class WorkspaceUiTest extends TestCase
         $this->assertFileExists(public_path('css/simpeg-auth-fallback.css'));
     }
 
+    public function test_compiled_ui_bundle_is_shipped_and_loaded_on_every_layout(): void
+    {
+        $manifest = json_decode(file_get_contents(public_path('ui/manifest.json')), true);
+
+        $this->assertIsArray($manifest);
+        $css = $manifest['resources/css/app.css']['file'];
+        $js = $manifest['resources/js/app.js']['file'];
+
+        $this->assertFileExists(public_path('ui/'.$css));
+        $this->assertFileExists(public_path('ui/'.$js));
+
+        $this->get(route('login'))
+            ->assertOk()
+            ->assertSee('ui/'.$css)
+            ->assertSee('ui/'.$js);
+
+        $this->actingAs($this->user('admin'))
+            ->get(route('admin.dashboard'))
+            ->assertOk()
+            ->assertSee('ui/'.$css)
+            ->assertSee('ui/'.$js);
+    }
+
     public function test_admin_dashboard_renders_new_workspace_and_navigation(): void
     {
         $this->actingAs($this->user('admin'))
