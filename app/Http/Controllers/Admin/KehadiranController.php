@@ -32,10 +32,10 @@ class KehadiranController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'pegawai_id' => 'required|exists:pegawai,id',
-            'tanggal'    => 'required|date',
+            'pegawai_id' => 'required|integer|exists:pegawai,id',
+            'tanggal'    => 'required|date_format:Y-m-d',
             'status'     => 'required|in:hadir,izin,sakit,alpha',
-            'keterangan' => 'nullable|string',
+            'keterangan' => 'nullable|string|max:5000',
         ]);
 
         Kehadiran::updateOrCreate(
