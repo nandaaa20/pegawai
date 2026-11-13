@@ -47,7 +47,7 @@ class LaporanPegawaiController extends Controller
             ->orderBy('departemen')
             ->pluck('departemen');
 
-        return view('admin.laporan.pegawai.index', compact(
+        return view('admin.Laporan.pegawai.index', compact(
             'pegawai',
             'status',
             'jabatan',
@@ -82,7 +82,7 @@ class LaporanPegawaiController extends Controller
 
         $pegawai = $query->orderBy('nama_lengkap')->get();
 
-        $pdf = Pdf::loadView('admin.laporan.pegawai.pdf', [
+        $pdf = Pdf::loadView('admin.Laporan.pegawai.pdf', [
             'pegawai'    => $pegawai,
             'status'     => $status,
             'jabatan'    => $jabatan,
