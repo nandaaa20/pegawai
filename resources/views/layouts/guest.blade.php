@@ -8,6 +8,8 @@
     <title>{{ config('app.name', 'SIMPEG') }} · Login</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800&display=swap" rel="stylesheet">
+    {{-- Critical fallback: keep authentication usable if Vite dev assets cannot be reached. --}}
+    <link rel="stylesheet" href="{{ asset('css/simpeg-auth-fallback.css') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="antialiased">
