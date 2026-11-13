@@ -3,7 +3,7 @@
         <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
                 <p class="simpeg-eyebrow mb-2">WORKSPACE OVERVIEW</p>
-                <h2>Selamat datang, {{ Str::before(auth()->user()->name, ' ') }} <span aria-hidden="true">👋</span></h2>
+                <h2>Selamat datang, {{ \Illuminate\Support\Str::before(auth()->user()->name, ' ') }} <span aria-hidden="true">👋</span></h2>
                 <p class="mt-1.5 text-sm text-slate-500">Berikut ringkasan operasional kepegawaian hari ini.</p>
             </div>
             <div class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-xs font-semibold text-slate-600">
