@@ -22,6 +22,15 @@ class WorkspaceUiTest extends TestCase
         ]);
     }
 
+    public function test_login_has_static_css_fallback_for_missing_vite_assets(): void
+    {
+        $this->get(route('login'))
+            ->assertOk()
+            ->assertSee('css/simpeg-auth-fallback.css');
+
+        $this->assertFileExists(public_path('css/simpeg-auth-fallback.css'));
+    }
+
     public function test_admin_dashboard_renders_new_workspace_and_navigation(): void
     {
         $this->actingAs($this->user('admin'))
