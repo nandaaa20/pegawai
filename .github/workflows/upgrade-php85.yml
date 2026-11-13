@@ -13,6 +13,8 @@ permissions:
 jobs:
   upgrade:
     runs-on: ubuntu-latest
+    container:
+      image: php:8.5-cli-bookworm
     services:
       mysql:
         image: mysql:8.0
@@ -34,11 +36,21 @@ jobs:
         with:
           persist-credentials: true
 
-      - name: Set PHP 8.5 platform target
+      - name: Install PHP extensions, Composer and Node
         run: |
+          apt-get update
+          DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends git unzip curl ca-certificates libonig-dev libxml2-dev libzip-dev nodejs npm
+          docker-php-ext-install pdo_mysql mbstring dom zip
+          curl -fsSL https://getcomposer.org/installer -o /tmp/composer-setup.php
+          EXPECTED=$(curl -fsSL https://composer.github.io/installer.sig)
+          ACTUAL=$(php -r "echo hash_file('sha384', '/tmp/composer-setup.php');")
+          test "$EXPECTED" = "$ACTUAL"
+          php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
           php -v
           composer --version
-          composer config platform.php 8.5.12
+
+      - name: Set PHP 8.5 platform target
+        run: composer config platform.php 8.5.12
 
       - name: Update Laravel and security-sensitive dependencies
         run: |
@@ -70,7 +82,7 @@ jobs:
         env:
           APP_ENV: testing
           DB_CONNECTION: mysql
-          DB_HOST: 127.0.0.1
+          DB_HOST: mysql
           DB_PORT: 3306
           DB_DATABASE: simpeg_test
           DB_USERNAME: simpeg
