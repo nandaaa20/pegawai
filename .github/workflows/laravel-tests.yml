@@ -30,12 +30,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
-          extensions: mbstring, pdo_mysql, bcmath, dom, fileinfo
-          coverage: none
+      - name: Verify runner PHP and extensions
+        run: |
+          php -v
+          php -m
+          php -r 'foreach (["pdo_mysql", "mbstring", "dom", "fileinfo"] as $extension) { if (!extension_loaded($extension)) { fwrite(STDERR, "Missing PHP extension: {$extension}\\n"); exit(1); } }'
 
       - name: Install Composer dependencies
         run: composer install --no-interaction --prefer-dist --no-progress
