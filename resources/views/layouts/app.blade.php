@@ -8,7 +8,7 @@
     <title>{{ config('app.name', 'SIMPEG') }} · Workspace</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800&display=swap" rel="stylesheet">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @include('layouts.partials.ui-assets')
 </head>
 <body class="simpeg-app min-h-screen antialiased" x-data="{ sidebarOpen: false }" @keydown.escape.window="sidebarOpen = false">
     <a href="#main-content" class="skip-link">Lewati ke konten utama</a>
