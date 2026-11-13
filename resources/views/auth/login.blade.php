@@ -1,108 +1,44 @@
 <x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
-
-    <!-- Header -->
-    <div class="text-center mb-8">
-        <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl shadow-lg mb-4">
-            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-            </svg>
-        </div>
-        <h2 class="text-2xl font-bold text-gray-900">Masuk ke SIMPEG</h2>
-        <p class="mt-2 text-sm text-gray-600">Sistem Informasi Manajemen Pegawai</p>
+    <div class="mb-8">
+        <div class="mb-3 inline-flex items-center gap-2 rounded-full bg-sky-50 px-3 py-1.5 text-[11px] font-bold text-sky-700"><span class="h-1.5 w-1.5 rounded-full bg-sky-500"></span> SELAMAT DATANG KEMBALI</div>
+        <h1 class="text-[30px] font-extrabold tracking-tight text-slate-900 sm:text-[34px]">Masuk ke akunmu</h1>
+        <p class="mt-2 text-sm leading-relaxed text-slate-500">Gunakan NIP dan password yang terdaftar untuk mengakses workspace.</p>
     </div>
 
-    <form method="POST" action="{{ route('login') }}" class="space-y-6">
-        @csrf
-
-        <!-- NIP -->
-        <div>
-            <x-input-label for="nip" value="NIP" class="mb-2 font-medium" />
-            <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                    </svg>
-                </div>
-                <x-text-input 
-                    id="nip" 
-                    class="block w-full pl-10" 
-                    type="text" 
-                    name="nip" 
-                    :value="old('nip')" 
-                    placeholder="Masukkan NIP Anda"
-                    required 
-                    autofocus 
-                />
-            </div>
-            <x-input-error :messages="$errors->get('nip')" class="mt-2" />
-        </div>
-
-        <!-- Password -->
-        <div>
-            <x-input-label for="password" value="Password" class="mb-2 font-medium" />
-            <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                    </svg>
-                </div>
-                <x-text-input 
-                    id="password" 
-                    class="block w-full pl-10"
-                    type="password"
-                    name="password"
-                    placeholder="Masukkan password Anda"
-                    required 
-                    autocomplete="current-password" 
-                />
-            </div>
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Remember Me & Forgot Password -->
-        <div class="flex items-center justify-between">
-            <label for="remember_me" class="inline-flex items-center cursor-pointer">
-                <input 
-                    id="remember_me" 
-                    type="checkbox" 
-                    class="rounded border-gray-300 text-emerald-600 shadow-sm focus:ring-emerald-500 cursor-pointer" 
-                    name="remember"
-                >
-                <span class="ms-2 text-sm text-gray-600 select-none">Ingat saya</span>
-            </label>
-            
-        </div>
-
-        <!-- Submit Button -->
-        <div>
-            <x-primary-button class="w-full justify-center py-3 text-base">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
-                </svg>
-                Masuk
-            </x-primary-button>
-        </div>
-    </form>
-
-    <!-- Info Box -->
-    <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-        <div class="flex items-start gap-3">
-            <svg class="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
+    <div class="simpeg-auth-form">
+        <x-auth-session-status class="mb-5" :status="session('status')" />
+        <form method="POST" action="{{ route('login') }}" class="space-y-5">
+            @csrf
             <div>
-                <p class="text-sm font-medium text-blue-800">Butuh bantuan?</p>
-                <p class="mt-1 text-xs text-blue-700">
-                    Hubungi admin kepegawaian jika mengalami kesulitan login atau lupa NIP/password.
-                </p>
+                <x-input-label for="nip" value="Nomor Induk Pegawai (NIP)" class="mb-2 !text-xs !font-bold !text-slate-700" />
+                <div class="relative">
+                    <svg class="pointer-events-none absolute left-3.5 top-3.5 h-5 w-5 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20v-1a7.5 7.5 0 0 1 15 0v1"/></svg>
+                    <x-text-input id="nip" class="block w-full !pl-11" type="text" name="nip" :value="old('nip')" placeholder="Masukkan NIP Anda" required autofocus autocomplete="username" inputmode="numeric" />
+                </div>
+                <x-input-error :messages="$errors->get('nip')" class="mt-2" />
             </div>
-        </div>
+            <div x-data="{ showPassword: false }">
+                <div class="mb-2 flex items-center justify-between gap-3">
+                    <x-input-label for="password" value="Password" class="!text-xs !font-bold !text-slate-700" />
+                    @if(Route::has('password.request'))
+                        <a href="{{ route('password.request') }}" class="text-xs font-bold text-sky-600 transition-colors hover:text-sky-700">Lupa password?</a>
+                    @endif
+                </div>
+                <div class="relative">
+                    <svg class="pointer-events-none absolute left-3.5 top-3.5 h-5 w-5 text-slate-400" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/></svg>
+                    <x-text-input id="password" class="block w-full !pl-11 !pr-12" x-bind:type="showPassword ? 'text' : 'password'" name="password" placeholder="Masukkan password Anda" required autocomplete="current-password" />
+                    <button type="button" class="absolute right-2 top-2 rounded-lg px-2 py-1.5 text-xs font-semibold text-slate-500 hover:bg-slate-100 hover:text-slate-800" @click="showPassword = !showPassword" x-bind:aria-label="showPassword ? 'Sembunyikan password' : 'Tampilkan password'" x-text="showPassword ? 'Tutup' : 'Lihat'"></button>
+                </div>
+                <x-input-error :messages="$errors->get('password')" class="mt-2" />
+            </div>
+            <label for="remember_me" class="inline-flex cursor-pointer items-center gap-2.5">
+                <input id="remember_me" type="checkbox" name="remember">
+                <span class="select-none text-xs font-medium text-slate-600">Tetap masuk di perangkat ini</span>
+            </label>
+            <button type="submit" class="simpeg-action-link !w-full !justify-center !py-3.5">Masuk ke workspace <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+        </form>
     </div>
-
-    <!-- Footer -->
-    <div class="mt-6 text-center text-xs text-gray-500">
-        <p>© {{ date('Y') }} SIMPEG. All rights reserved.</p>
+    <div class="mt-6 rounded-xl border border-slate-200 bg-white/80 p-4">
+        <div class="flex gap-3"><span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-sky-50 text-sky-600"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8h.01"/></svg></span><div><p class="text-xs font-bold text-slate-800">Butuh bantuan masuk?</p><p class="mt-1 text-xs leading-relaxed text-slate-500">Hubungi admin kepegawaian jika NIP atau akses akunmu bermasalah.</p></div></div>
     </div>
 </x-guest-layout>
