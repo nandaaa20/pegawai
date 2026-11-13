@@ -32,10 +32,6 @@ jobs:
           --health-retries=10
 
     steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: true
-
       - name: Install PHP extensions, Composer and Node
         run: |
           apt-get update
@@ -50,6 +46,10 @@ jobs:
           php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
           php -v
           composer --version
+
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
 
       - name: Set PHP 8.5 platform target
         run: composer config platform.php 8.5.12
