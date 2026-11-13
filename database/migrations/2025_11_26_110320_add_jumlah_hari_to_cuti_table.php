@@ -17,10 +17,7 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::table('cuti', function (Blueprint $table) {
-            if (Schema::hasColumn('cuti', 'jumlah_hari')) {
-                $table->dropColumn('jumlah_hari');
-            }
-        });
+        // The base create_cuti_table migration already defines jumlah_hari.
+        // Never drop a column owned by an earlier migration.
     }
 };
