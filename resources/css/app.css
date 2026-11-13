@@ -1,3 +1,93 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    :root { color-scheme: light; }
+    html { scroll-behavior: smooth; }
+    body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    * { -webkit-tap-highlight-color: transparent; }
+    :focus-visible { outline: 3px solid #38bdf8; outline-offset: 3px; }
+    [x-cloak] { display: none !important; }
+}
+
+@layer components {
+    .simpeg-app { @apply bg-[#f5f7fb] text-slate-800; }
+    .skip-link { @apply fixed left-4 top-3 z-[100] -translate-y-24 rounded-xl bg-sky-500 px-4 py-2 font-semibold text-white focus:translate-y-0; }
+    .simpeg-shell { @apply min-h-screen; }
+    .simpeg-sidebar { @apply fixed inset-y-0 left-0 z-50 flex w-[264px] -translate-x-full flex-col bg-[#111c34] text-slate-300 shadow-2xl transition-transform duration-300 ease-out lg:translate-x-0; }
+    .simpeg-sidebar-visible { @apply translate-x-0; }
+    .simpeg-sidebar-backdrop { @apply fixed inset-0 z-40 bg-slate-950/55 backdrop-blur-[2px]; }
+    .simpeg-sidebar-brand { @apply flex h-[88px] shrink-0 items-center justify-between border-b border-white/[.07] px-6; }
+    .simpeg-brand-mark { @apply flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] bg-sky-500 text-white shadow-[0_8px_28px_rgba(14,165,233,.24)]; }
+    .simpeg-sidebar-scroll { @apply flex-1 space-y-1 overflow-y-auto px-4 py-6; scrollbar-width: thin; scrollbar-color: #34415c transparent; }
+    .simpeg-sidebar-label { @apply mb-3 px-3 text-[10px] font-bold tracking-[.19em] text-slate-500; }
+    .simpeg-nav-link { @apply flex min-h-[44px] items-center gap-3 rounded-xl border border-transparent px-3.5 py-2.5 text-[13px] font-semibold text-slate-400 transition-all duration-200 hover:bg-white/[.065] hover:text-white; }
+    .simpeg-nav-link > svg:first-child { @apply h-[19px] w-[19px] shrink-0; }
+    .simpeg-nav-link-active { @apply border-sky-400/10 bg-sky-500/15 text-white shadow-[inset_3px_0_0_#38bdf8]; }
+    .simpeg-nav-link-active > svg:first-child { @apply text-sky-400; }
+    .simpeg-subnav { @apply ml-5 mt-1 space-y-0.5 border-l border-slate-700/70 pl-4; }
+    .simpeg-subnav-link { @apply block rounded-lg px-3 py-2 text-xs font-medium text-slate-400 transition-colors hover:bg-white/5 hover:text-white; }
+    .simpeg-subnav-active { @apply bg-white/[.08] font-semibold text-sky-300; }
+    .simpeg-sidebar-bottom { @apply shrink-0 border-t border-white/[.08] p-4; }
+    .simpeg-sidebar-user { @apply flex items-center gap-3 rounded-xl bg-white/[.055] p-3; }
+    .simpeg-avatar { @apply flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 text-xs font-extrabold tracking-wide text-white; }
+    .simpeg-avatar-small { @apply h-9 w-9 rounded-full; }
+    .simpeg-logout { @apply mt-2 flex w-full items-center gap-3 rounded-xl px-3.5 py-2.5 text-left text-xs font-semibold text-slate-400 transition-colors hover:bg-rose-500/10 hover:text-rose-300; }
+    .simpeg-workspace { @apply flex min-h-screen min-w-0 flex-col lg:pl-[264px]; }
+    .simpeg-topbar { @apply sticky top-0 z-30 flex h-[72px] shrink-0 items-center justify-between gap-4 border-b border-slate-200/80 bg-white/95 px-4 backdrop-blur-xl sm:px-8 lg:px-10; }
+    .simpeg-icon-button { @apply flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50; }
+    .simpeg-live-badge { @apply inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-[11px] font-semibold text-emerald-700 ring-1 ring-inset ring-emerald-100; }
+    .simpeg-live-dot { @apply h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[0_0_0_3px_rgba(16,185,129,.13)]; }
+    .simpeg-top-profile { @apply flex items-center gap-2 rounded-xl p-1.5 transition-colors hover:bg-slate-50; }
+    .simpeg-page-heading { @apply border-b border-slate-200/70 bg-white px-4 py-7 sm:px-8 lg:px-10; }
+    .simpeg-heading-inner { @apply mx-auto w-full max-w-[1360px]; }
+    .simpeg-page-heading h2 { @apply text-xl font-extrabold tracking-tight text-slate-900 sm:text-[24px]; }
+    .simpeg-page-heading p { @apply text-slate-500; }
+    .simpeg-main { @apply mx-auto w-full max-w-[1440px] flex-1 px-4 pb-12 pt-5 sm:px-8 lg:px-10 lg:pt-7; }
+    .simpeg-footer { @apply flex items-center justify-between gap-3 border-t border-slate-200/70 px-5 py-5 text-[11px] text-slate-400 sm:px-8 lg:px-10; }
+    .simpeg-flash { @apply mb-5 flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium shadow-sm; }
+    .simpeg-flash-success { @apply border-emerald-200 bg-emerald-50 text-emerald-800; }
+    .simpeg-flash-error { @apply border-rose-200 bg-rose-50 text-rose-800; }
+    .simpeg-eyebrow { @apply text-[11px] font-bold uppercase tracking-[.18em] text-sky-600; }
+    .simpeg-page-title { @apply text-2xl font-extrabold tracking-tight text-slate-900 sm:text-[30px]; }
+    .simpeg-card { @apply rounded-2xl border border-slate-200/80 bg-white shadow-[0_5px_28px_rgba(17,24,39,.035)]; }
+    .simpeg-card-heading { @apply flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 px-5 py-5 sm:px-6; }
+    .simpeg-stat-card { @apply relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[0_5px_24px_rgba(17,24,39,.035)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_30px_rgba(17,24,39,.07)] sm:p-6; }
+    .simpeg-stat-label { @apply text-xs font-semibold text-slate-500; }
+    .simpeg-stat-value { @apply mt-3 text-[34px] font-extrabold leading-none tracking-tight text-slate-900; }
+    .simpeg-stat-icon { @apply flex h-11 w-11 items-center justify-center rounded-xl bg-sky-50 text-sky-600; }
+    .simpeg-stat-icon svg { @apply h-5 w-5; }
+    .simpeg-action-link { @apply inline-flex items-center justify-center gap-2 rounded-xl bg-sky-500 px-4 py-2.5 text-sm font-bold text-white shadow-[0_5px_16px_rgba(14,165,233,.19)] transition-colors hover:bg-sky-600 focus-visible:outline-sky-400; }
+    .simpeg-action-link-secondary { @apply inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 transition-colors hover:border-sky-200 hover:bg-sky-50; }
+    .simpeg-quick-action { @apply flex items-center gap-4 rounded-2xl border border-slate-200/80 bg-white px-5 py-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-sky-200 hover:shadow-md; }
+    .simpeg-quick-icon { @apply flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-sky-50 text-sky-600; }
+    .simpeg-quick-icon svg { @apply h-6 w-6; }
+    .simpeg-tag { @apply inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-bold; }
+    .simpeg-tag-success { @apply bg-emerald-50 text-emerald-700; }
+    .simpeg-tag-warning { @apply bg-amber-50 text-amber-700; }
+    .simpeg-tag-danger { @apply bg-rose-50 text-rose-700; }
+    .simpeg-progress-track { @apply h-2 w-full overflow-hidden rounded-full bg-slate-100; }
+    .simpeg-progress-fill { @apply h-full rounded-full bg-sky-500; }
+    .simpeg-auth-page { @apply min-h-screen bg-[#f5f7fb] lg:grid lg:grid-cols-2; }
+    .simpeg-auth-hero { @apply relative hidden min-h-screen flex-col justify-between overflow-hidden bg-[#111c34] p-12 text-white lg:flex xl:p-16; }
+    .simpeg-auth-panel { @apply flex min-h-screen flex-col items-center justify-center px-5 py-10 sm:px-10 lg:px-16; }
+    .simpeg-auth-card { @apply w-full max-w-[440px]; }
+    .simpeg-auth-form { @apply rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_18px_60px_rgba(15,23,42,.065)] sm:p-8; }
+    .simpeg-auth-panel input[type="text"], .simpeg-auth-panel input[type="password"], .simpeg-auth-panel input[type="email"] { @apply w-full rounded-xl border-slate-200 bg-slate-50/80 px-4 py-3 text-sm text-slate-800 shadow-none transition-colors focus:border-sky-500 focus:bg-white focus:ring-sky-500/20; }
+    .simpeg-auth-panel input[type="checkbox"] { @apply rounded border-slate-300 text-sky-500 focus:ring-sky-500; }
+    /* Apply consistent visual treatment to older CRUD and report screens without modifying their behavior. */
+    .simpeg-main .bg-white.shadow-sm, .simpeg-main .bg-white.rounded-lg, .simpeg-main .bg-white.rounded-xl { @apply border border-slate-200/80 shadow-[0_5px_28px_rgba(17,24,39,.035)]; border-radius: 1rem; }
+    .simpeg-main table { @apply w-full text-sm; }
+    .simpeg-main table thead { @apply bg-slate-50/90; }
+    .simpeg-main table thead th { @apply whitespace-nowrap border-b border-slate-200 px-4 py-3.5 text-left text-[11px] font-bold uppercase tracking-[.085em] text-slate-500; }
+    .simpeg-main table tbody tr { @apply border-b border-slate-100 transition-colors hover:bg-sky-50/30; }
+    .simpeg-main table tbody td { @apply px-4 py-3.5; }
+    .simpeg-main input:not([type="checkbox"]):not([type="radio"]), .simpeg-main select, .simpeg-main textarea { @apply rounded-xl border-slate-200 text-sm shadow-none focus:border-sky-400 focus:ring-sky-400/20; }
+    .simpeg-main .overflow-x-auto { scrollbar-width: thin; }
+    .simpeg-main .pagination { @apply flex-wrap; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
