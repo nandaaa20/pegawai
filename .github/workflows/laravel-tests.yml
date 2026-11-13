@@ -42,7 +42,8 @@ jobs:
       - name: Build frontend assets
         run: |
           npm ci
-          npm install --no-save --no-package-lock "@rollup/rollup-linux-x64-gnu@$(node -p \"require('./node_modules/rollup/package.json').version\")"
+          ROLLUP_VERSION=$(node -p "require('./node_modules/rollup/package.json').version")
+          npm install --no-save --no-package-lock "@rollup/rollup-linux-x64-gnu@$ROLLUP_VERSION"
           npm run build
 
       - name: Prepare Laravel environment
